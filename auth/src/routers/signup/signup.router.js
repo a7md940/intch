@@ -4,7 +4,10 @@ const signupValidators = require('./signup-validators');
 
 const signupRouter = express.Router();
 
-const { body, validationResult } = require('express-validator');
+const {
+    body,
+    validationResult
+} = require('express-validator');
 
 
 
@@ -12,14 +15,16 @@ signupRouter.post(
     '/',
     [
         body('username')
-            .trim()
-            .notEmpty()
-            .isString()
-            .withMessage('username must be valid'),
+        .trim()
+        .notEmpty()
+        .withMessage('errors:signup:usernameIsRequired')
+        .isString()
+        .withMessage('errors:signup:usernameMustBeString'),
         body('email')
-            .isEmail()
-            .notEmpty()
-            .withMessage('Email must be valid')
+        .notEmpty()
+        .withMessage('errors:signup:emailIsRequired')
+        .isEmail()
+        .withMessage('errors:signup:invalidEmail')
     ],
     SignupController.signup,
 );
