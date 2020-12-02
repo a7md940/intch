@@ -1,32 +1,29 @@
 const express = require('express');
-const SignupController = require('../../controllers/signup.controller');
-const signupValidators = require('./signup-validators');
+const { body } = require('express-validator');
+const { SignupController } = require('./../../controllers');
+
+const { container } = require('./../../di-setup');
 
 const signupRouter = express.Router();
-
-const {
-    body,
-    validationResult
-} = require('express-validator');
-
-
+/** @instance @type {SignupController} */
+const signupController = container.resolve(SignupController.diName); 
 
 signupRouter.post(
     '/',
     [
         body('username')
-        .trim()
-        .notEmpty()
-        .withMessage('errors:signup:usernameIsRequired')
-        .isString()
-        .withMessage('errors:signup:usernameMustBeString'),
+            .trim()
+            .notEmpty()
+            .withMessage('errors:signup:usernameIsRequired')
+            .isString()
+            .withMessage('errors:signup:usernameMustBeString'),
         body('email')
-        .notEmpty()
-        .withMessage('errors:signup:emailIsRequired')
-        .isEmail()
-        .withMessage('errors:signup:invalidEmail')
+            .notEmpty()
+            .withMessage('errors:signup:emailIsRequired')
+            .isEmail()
+            .withMessage('errors:signup:invalidEmail')
     ],
-    SignupController.signup,
+    signupController.signup,
 );
 
 module.exports = signupRouter;
