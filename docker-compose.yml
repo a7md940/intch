@@ -5,8 +5,13 @@ services:
     image: mongo:3.6
     ports:
       - "27017:27017"
-    volumes: 
+    volumes:
       - C:/Mongo/data/db:/data/db/
+
+  intch.redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
 
 networks:
   default:

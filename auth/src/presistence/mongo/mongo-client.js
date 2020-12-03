@@ -1,4 +1,4 @@
-const { Db, C } = require('mongodb');
+const { Db, C, Logger } = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 
 const repos = require('./schema');
@@ -17,6 +17,10 @@ class MongoManager {
      */
     connect(url) {
         return new Promise((resolve, reject) => {
+            if (process.env.NODE_ENV == 'dev') {
+                Logger.setLevel('debug');
+            }
+            // Logger.setLevel('error');
             MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
                 if (err) {
                     reject(err);

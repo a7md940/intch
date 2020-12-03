@@ -1,29 +1,19 @@
 const express = require('express');
-const { body } = require('express-validator');
-const { SignupController } = require('./../../controllers');
 
+const { excutePipe, excuteHandler } = require('./../../middlewares')
+const { SignupController } = require('./../../controllers');
 const { container } = require('./../../di-setup');
+const { CreateUserDtoPipe } = require('./../../middlewares/validator-pipes');
 
 const signupRouter = express.Router();
 /** @instance @type {SignupController} */
-const signupController = container.resolve(SignupController.diName); 
-
+const signupController = container.resolve(SignupController.diName);
+/** @instance @type {CreateUserDtoPipe} */
+const createUserDtoPipe = container.resolve(CreateUserDtoPipe.diName);
 signupRouter.post(
     '/',
-    [
-        body('username')
-            .trim()
-            .notEmpty()
-            .withMessage('errors:signup:usernameIsRequired')
-            .isString()
-            .withMessage('errors:signup:usernameMustBeString'),
-        body('email')
-            .notEmpty()
-            .withMessage('errors:signup:emailIsRequired')
-            .isEmail()
-            .withMessage('errors:signup:invalidEmail')
-    ],
-    signupController.signup,
+    excutePipe(createUserDtoPipe.transform),
+    excuteHandler(signupController.signup),
 );
 
 module.exports = signupRouter;

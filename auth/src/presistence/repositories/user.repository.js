@@ -2,14 +2,36 @@ const { User } = require('./../../models/user');
 const { Db } = require('mongodb');
 
 module.exports = class UserRepository {
+    /** @type {import('mongodb').Collection<User>} */
+    User;
     /**
-     * 
      * @param {Db} db 
      */
     constructor(db) {
         this.User = db.collection('users');
     }
 
+    async getByUsername(username) {
+        const user = await this.User.findOne({ username });
+        return user;
+    }
+
+    /**
+     * Find one record of user using filter criteria.
+     * @param {import('mongodb').FilterQuery<User>} where
+     * @param {import('mongodb').FindOneOptions<User>} options
+     */
+    findOne(where, options = null) {
+        return this.User.findOne(where, options)
+            .then(x => {
+                if (x) {
+                    x.id = x._id;
+                    delete x._id;
+                    return x;
+                }
+                return null;
+            });
+    }
 
     /**
      * Creates new user in `User collection`.
@@ -23,8 +45,9 @@ module.exports = class UserRepository {
                     reject(err);
                 }
                 const [createdUser] = result.ops;
-                console.log(await this.User.findOne({ _id: createdUser._id }))
-                resolve(createdUser)
+                createdUser.id = createdUser._id;
+                delete createdUser._id;
+                resolve(createdUser);
             })
         });
     }
