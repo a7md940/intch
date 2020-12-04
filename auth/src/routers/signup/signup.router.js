@@ -1,19 +1,19 @@
 const express = require('express');
 
-const { excutePipe, excuteHandler } = require('./../../middlewares')
-const { SignupController } = require('./../../controllers');
-const { container } = require('./../../di-setup');
-const { CreateUserDtoPipe } = require('./../../middlewares/validator-pipes');
+const { container } = require('../../di-setup');
+const { excutePipe, excuteHandler } = require('../../middlewares')
+const { AuthController } = require('../../controllers');
+const { CreateUserDtoPipe } = require('../../middlewares/validator-pipes');
 
-const signupRouter = express.Router();
-/** @instance @type {SignupController} */
-const signupController = container.resolve(SignupController.diName);
+const signupROuter = express.Router();
+/** @instance @type {AuthController} */
+const authController = container.resolve(AuthController.diName);
 /** @instance @type {CreateUserDtoPipe} */
 const createUserDtoPipe = container.resolve(CreateUserDtoPipe.diName);
-signupRouter.post(
+
+signupROuter.post(
     '/',
     excutePipe(createUserDtoPipe.transform),
-    excuteHandler(signupController.signup),
+    excuteHandler(authController.signup),
 );
-
-module.exports = signupRouter;
+module.exports = signupROuter;

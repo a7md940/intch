@@ -5,6 +5,7 @@ const {
     DuplicateEntityError
 } = require('@intch/common');
 const { ConflictException } = require('@intch/common/http-excptions');
+const HttpExceptionsBase = require('@intch/common/http-excptions/http-exceptions-base');
 
 /**
  * 
@@ -30,6 +31,9 @@ const excuteHandler = (fn) => {
                     const httpExc = new ConflictException(exc.message, exc.code);
                     return res.status(httpExc.statusCode)
                         .send(httpExc);
+                } else if (exc instanceof HttpExceptionsBase) {
+                    return res.status(exc.statusCode)
+                        .send(exc);
                 } else {
                     return res.status(500)
                         .send({ errors: [{ message: 'something went wrong!!' }] });

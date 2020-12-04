@@ -28,6 +28,12 @@ module.exports = UserSchemaFactory = async mongoManager => {
                         bsonType: 'string',
                         description: 'Must be email and is required'
                     },
+                    password: {
+                        bsonType: 'string',
+                    },
+                    password: {
+                        bsonType: 'bool',
+                    },
                 }
             }
         }

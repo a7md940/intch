@@ -51,4 +51,13 @@ module.exports = class UserRepository {
             })
         });
     }
+    /**
+     * Updates an existing user
+     * @param {string} userId User identifier
+     * @param {User} data User data to update
+     * @returns {Promise<User>} promise of updated user result.
+     */
+    updateOne(userId, data) {
+        return this.User.updateOne({ _id: userId }, { $set: data }, { upsert: true });
+    }
 }

@@ -5,7 +5,10 @@ module.exports = class User {
     username;
     /** @type {string} */
     email;
-
+    /** @type {string} */
+    password;
+    /** @type {boolean} */
+    verified;
     static build({ _id, username, email }) {
         const result = new User();
         if (_id) {
@@ -13,6 +16,8 @@ module.exports = class User {
         }
         result.email = email;
         result.username = username;
+        result.password = password;
+        result.verified = verified;
         return result;
     }
 }

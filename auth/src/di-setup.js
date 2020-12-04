@@ -1,6 +1,6 @@
 const awilix = require('awilix');
 const { UserService, AuthService } = require('./services');
-const { SignupController } = require('./controllers');
+const { AuthController } = require('./controllers');
 const { UserRepository } = require('./presistence/repositories');
 const { getDbInstance } = require('./presistence/db');
 const { CreateUserDtoPipe } = require('./middlewares/validator-pipes');
@@ -19,13 +19,13 @@ const setupDi = async () => {
         redis: awilix.asValue(redisStorage),
         [SendGridGateway.diName]: awilix.asClass(SendGridGateway),
 
-        [SignupController.diName]: awilix.asClass(SignupController),
-        
+        [AuthController.diName]: awilix.asClass(AuthController),
+
         [CreateUserDtoPipe.diName]: awilix.asClass(CreateUserDtoPipe),
-        
+
         [AuthService.diName]: awilix.asClass(AuthService),
         userService: awilix.asClass(UserService),
-        
+
         userRepo: awilix.asClass(UserRepository),
     });
 }

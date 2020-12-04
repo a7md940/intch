@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const { container, setupDi } = require('./di-setup');
 const app = require('./app');
 const config = require('./config/config');
-const { excuteHandler: errorHandler } = require('./middlewares');
 
 const bootstrap = async () => {
     await setupDi();
@@ -11,8 +10,9 @@ const bootstrap = async () => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    const { signupRoute } = require('./routers/signup');
+    const { signupRoute, authRouter } = require('./routers/signup');
     app.use('/signup', signupRoute);
+    app.use('/auth', authRouter);
     app.use((err, req, res, next) => {
         console.error(err);
     })
