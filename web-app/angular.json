@@ -127,5 +127,8 @@
       }
     }
   },
-  "defaultProject": "web-app"
+  "defaultProject": "web-app",
+  "cli": {
+    "analytics": false
+  }
 }
