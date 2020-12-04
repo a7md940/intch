@@ -12,7 +12,6 @@ const SendGridGateway = require('../gateways/send-grid.gateway');
 const { AesEncryptor } = require('../utils');
 module.exports = class AuthController extends BaseController {
 
-
     constructor(userService, authService, redis, sendGridGateway) {
         super();
         /** @private @instance @type {AuthService}*/
@@ -32,7 +31,7 @@ module.exports = class AuthController extends BaseController {
      * @param {express.Request} req Request
      * @param {express.Response} res Response
      */
-    signup = async (req, res) => {
+    async signup(req, res) {
         const createdUser = await this.userService.create(req.body);
 
         const verificationCode = this.authService.generateToken(createdUser.id, createdUser.username, req.hostname, '5m');
@@ -86,7 +85,7 @@ module.exports = class AuthController extends BaseController {
      * @param {express.Request} req Request
      * @param {express.Response} res Response
      */
-    verifyUserEmail = async (req, res) => {
+    async verifyUserEmail(req, res) {
         /** @instance @type {User} */
         let user = null;
         try {
@@ -117,7 +116,7 @@ module.exports = class AuthController extends BaseController {
      * @param {Express.Request} req 
      * @param {import('express').Response} res 
      */
-    resetPassword = async (req, res) => {
+    async resetPassword(req, res) {
         const { password } = req.body;
         const { id, username } = req.currentUser;
         const hashedPassword = this.authService.hashPassword(password, username);

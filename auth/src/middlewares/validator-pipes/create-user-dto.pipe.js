@@ -8,7 +8,7 @@ module.exports = class CreateUserDtoPipe {
     constructor() { }
 
     /**@returns {CreateUserDto} */
-    transform = (value) => {
+    transform(value) {
         if (!value.username) {
             throw new ParameterError(['username'], 'createUser:usernameIsRequired');
         } else if (typeof value.username != 'string') {

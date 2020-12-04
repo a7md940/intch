@@ -1,7 +1,8 @@
-const config = require('./../../config/config');
 const redis = require('redis');
-const client = redis.createClient(config.redisConfig);
 const { promisify } = require('util');
+
+const config = require('./../../config/config');
+const client = redis.createClient(config.redisConfig);
 
 client.on('error', function (error) {
     console.error(error);

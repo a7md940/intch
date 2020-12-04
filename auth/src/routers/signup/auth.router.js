@@ -1,9 +1,9 @@
 const express = require('express');
+const { requireAuth } = require('@intch/common/middlewares');
 
 const { container } = require('../../di-setup');
 const { excutePipe, excuteHandler } = require('../../middlewares')
 const { AuthController } = require('../../controllers');
-const requireAuth = require('../../../../common/middlewares/require-auth');
 const config = require('../../config/config');
 
 const authRouter = express.Router();

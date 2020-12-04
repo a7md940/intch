@@ -1,7 +1,7 @@
 const mongoManager = require('./mongo/mongo-client');
 
 const getDbInstance = async () => {
-    const db = await mongoManager.connect('mongodb://localhost:27017');
+    const db = await mongoManager.connect(process.env.MONGO_URI);
     mongoManager.buildRepos();
     return db;
 }

@@ -1,13 +1,11 @@
 module.exports = class CreateUserDto {
-    /** @type {string} */
-    username;
-    /** @type {string} */
-    email;
-
+    
     /** @returns {CreateUserDto} */
     static toDto(toConvert) {
         const result = new CreateUserDto();
+        /** @type {string} */
         result.email = toConvert.email;
+        /** @type {string} */
         result.username = toConvert.username;
         return result;
     }

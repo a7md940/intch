@@ -5,11 +5,12 @@ const repos = require('./schema');
 
 const clientProp = Symbol('client');
 class MongoManager {
-    /** @type {MongoClient} */
-    [clientProp] = null;
+    constructor() {
+        /** @type {MongoClient} */
+        this[clientProp] = null;
 
-    repos = [];
-
+        this.repos = [];
+    }
     /**
      * Connect to mongodb server
      * @param {string} url The mongodb URI Connection string.
@@ -26,10 +27,10 @@ class MongoManager {
                     reject(err);
                     return;
                 }
-    
+
                 console.log('Connected Sucessfully with Database');
                 this[clientProp] = client;
-    
+
                 this.db = this[clientProp].db('auth');
                 resolve(this.db);
             });

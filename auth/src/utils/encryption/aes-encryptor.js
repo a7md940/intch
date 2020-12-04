@@ -7,22 +7,24 @@ const _iv = Symbol('iv');
 const _alog = Symbol('alog');
 
 module.exports = class AesEncryptor {
-    /** @type {Buffer} */
-    [_key] = scryptSync(Buffer.from(config.encyptionKey), Buffer.alloc(5, 0), 16);
-    /** @type {Buffer} */
-    [_iv] = randomBytes(16);
-    /** @type {string} */
-    [_alog] = 'aes-128-cbc';
 
-    IVLen = 16;
-    keyLen = 32;
-    algorithm = 'aes-256-cbc';
-    key = config.encyptionKey;
-    salt = Buffer.from([0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76]);
-    pdb = new Rfc2898DeriveBytes(this.key, this.salt);
-    nodeCrypto = this.pdb.getBytes(this.keyLen + this.IVLen);
-    
-    constructor() { }
+
+    constructor() {
+        /** @type {Buffer} */
+        this[_key] = scryptSync(Buffer.from(config.encyptionKey), Buffer.alloc(5, 0), 16);
+        /** @type {Buffer} */
+        this[_iv] = randomBytes(16);
+        /** @type {string} */
+        this[_alog] = 'aes-128-cbc';
+
+        this.IVLen = 16;
+        this.keyLen = 32;
+        this.algorithm = 'aes-256-cbc';
+        this.key = config.encyptionKey;
+        this.salt = Buffer.from([0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76]);
+        this.pdb = new Rfc2898DeriveBytes(this.key, this.salt);
+        this.nodeCrypto = this.pdb.getBytes(this.keyLen + this.IVLen);
+    }
 
 
 

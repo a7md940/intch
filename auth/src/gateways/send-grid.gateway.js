@@ -2,8 +2,6 @@ const nodemailer = require('nodemailer');
 const config = require('../config/config');
 
 module.exports = class SendGridGateway {
-    static diName = 'sendGridGateway';
-
     constructor() {
         this.client = nodemailer.createTransport({
             host: config.sendGrid.host,

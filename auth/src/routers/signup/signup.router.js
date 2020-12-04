@@ -14,6 +14,6 @@ const createUserDtoPipe = container.resolve('createUserDtoPipe');
 signupROuter.post(
     '/',
     excutePipe(createUserDtoPipe.transform),
-    excuteHandler(authController.signup),
+    (req, res, next) => excuteHandler(authController.signup(req, res)),
 );
 module.exports = signupROuter;

@@ -1,11 +1,4 @@
 module.exports = class SignupDto {
-    /** @type {string} */
-    token;
-    /** @type {string} */
-    refreshToken;
-    /** @type {string} */
-    userId;
-
     /**
      * Build new instance of SignupDto class.
      * @param {string} token User token
@@ -14,8 +7,11 @@ module.exports = class SignupDto {
      */
     static build(token, refreshToken, userId) {
         const result = new SignupDto();
+        /** @type {string} */
         result.token = token;
+        /** @type {string} */
         result.refreshToken = refreshToken;
+        /** @type {string} */
         result.userId = userId;
         return result;
     }
