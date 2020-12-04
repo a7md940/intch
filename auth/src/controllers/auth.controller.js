@@ -39,6 +39,8 @@ module.exports = class AuthController extends BaseController {
     async signup(req, res) {
         const createdUser = await this.userService.create(req.body);
 
+        // TODO: store verification code to redis so if user decided to resend the verification code, the first one will expire so we will replace it with the new one
+        // so verificatoin code expiration date will depend on toke expiration date and if it stored in our redis cache or not.
         const verificationCode = this.authService.generateToken(createdUser.id, createdUser.username, req.hostname, '5m');
         this.sendGridGateway.sendEmail(
             config.appEmail,

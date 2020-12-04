@@ -24,18 +24,27 @@ export class SignupComponent implements OnInit {
   }
 
   submit(): void {
-    const { username, email } = this.form.value;
-    console.log(this.form)
-    if (this.form.valid) {
+    try {
+
+      const { username, email } = this.form.value;
+      if (this.form.invalid) {
+        this.form.markAllAsTouched();
+        console.log(this.form);
+        return;
+      }
+
+      console.log('submitter', this.form, this.form.value);
       this._authService.signup(username, email)
         .subscribe(
           (resp) => {
-            this._router.navigate(['/']);
+            this._router.navigate(['/verify']);
           },
           (err) => {
 
           }
         );
+    } catch (exc) {
+      console.error(exc);
     }
   }
   private _buildForm(): void {

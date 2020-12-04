@@ -15,7 +15,14 @@ export class VerificationService {
 
   }
   verifyEmail(verifcationCode: string): Observable<UserAuth> {
-    let httpParam = new HttpParams().append('key', verifcationCode);
-    return this._http.get<UserAuth>(`${this._config.authUrl}/auth/verify`, { params: httpParam });
+    const httpParam = new HttpParams().append('key', verifcationCode);
+    return this._http.get<UserAuth>(`${this._config.authUrl}/verify`, { params: httpParam });
+  }
+
+  resendEmail(email: string): Observable<void> {
+    if (email == null) {
+      throw new Error('Email is required to resend verification code.');
+    }
+    return this._http.post<void>(`${this._config.authUrl}/verify/resend`, { email });
   }
 }

@@ -43,7 +43,9 @@ module.exports = class VerificationController {
             if (!user.verified) {
                 await this.authService.verifyUserEmail(user.id);
                 res.status(200)
-                    .send({ token: this.authService.generateToken(user.id, user.username, req.hostname) });
+                    .send({
+                        token: this.authService.generateToken(user.id, user.username, req.hostname)
+                    });
             } else {
                 throw new BadRequestException('verifiyUserEmail:Useralreadyverified', 'UALDVfd20');
             }
@@ -58,6 +60,10 @@ module.exports = class VerificationController {
         if (!user) {
             throw new NotFoundError('resendVerificationCode:userNotFound', 'RSVEMusntd57f');
         }
+
+        // TODO: store verification code to redis so if user decided to resend the verification code, the first one will expire so we will replace it with the new one
+        // so verificatoin code expiration date will depend on toke expiration date and if it stored in our redis cache or not.
+        const verificationCode = this.authService.generateToken(user.id, user.username, req.hostname, '5m');
         this.sendGridGateway.sendEmail(
             config.appEmail,
             email,
@@ -70,7 +76,7 @@ module.exports = class VerificationController {
                 <body>
                     <article>
                         <p>
-                            Hi, <b>${createdUser.username}</b>
+                            Hi, <b>${user.username}</b>
                         </p>
                         <p>
                             We are happy to join us.

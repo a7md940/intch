@@ -10,11 +10,12 @@ const bootstrap = async () => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    const { signupRouter, authRouter, loginRouter } = require('./routers');
+    const { signupRouter, authRouter, loginRouter, verificationRouter } = require('./routers');
     app.use('/signup', signupRouter);
-    app.use('/login', loginRouter);
+    app.use('/signin', loginRouter);
     app.use('/auth', authRouter);
-    app.get('/health', (req, res) => res.send('Healthe check ok'))
+    app.use('/verify', verificationRouter);
+    app.get('/health', (req, res) => res.send('Healthe check ok'));
 
     app.use((err, req, res, next) => {
         console.error(err)

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { VerificationService } from '../services/verification.service';
 import { AppValidator } from '../utils/app-validators';
@@ -16,14 +17,15 @@ export class VerificationComponent implements OnInit {
   });
 
   constructor(
-    private _verificationService: VerificationService
+    private _verificationService: VerificationService,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
 
   }
 
-  submit() {
+  submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -32,7 +34,9 @@ export class VerificationComponent implements OnInit {
     this._verificationService.verifyEmail(this.verificationCode)
       .subscribe(
         (resp) => {
-          console.log(resp)
+          console.log(resp);
+          localStorage.setItem('userAuth', `{ "token": "${resp.token}" }`);
+          this._router.navigate(['/verify/complete']);
         },
         (err) => {
 

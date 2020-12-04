@@ -5,14 +5,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SignupComponent } from './signup/signup.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { VerificationComponent } from './verification/verification.component';
+import { ResendVerificationComponent } from './resend-verification/resend-verification.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SignupComponent,
-    VerificationComponent
+    VerificationComponent,
+    ResendVerificationComponent,
+    ResetPasswordComponent,
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     FormsModule,
@@ -21,7 +30,10 @@ import { VerificationComponent } from './verification/verification.component';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
