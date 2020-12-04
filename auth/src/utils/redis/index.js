@@ -1,3 +1,3 @@
 module.exports = {
-    redisStorage: require('./redis-manager')
+    RedisManager: require('./redis-manager')
 };

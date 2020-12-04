@@ -10,13 +10,20 @@ const bootstrap = async () => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    const { signupRoute, authRouter } = require('./routers/signup');
-    app.use('/signup', signupRoute);
+    const { signupRouter, authRouter, loginRouter } = require('./routers');
+    app.use('/signup', signupRouter);
+    app.use('/login', loginRouter);
     app.use('/auth', authRouter);
+    app.get('/health', (req, res) => res.send('Healthe check ok'))
+
     app.use((err, req, res, next) => {
-        console.error(err);
+        console.error(err)
+        if (err) {
+            return res.status(err.statusCode || 500)
+            .send(err);
+        }
+        return next();
     })
-    // app.use(errorHandler)
     app.listen(config.port, () => console.log(`App listening on port ${config.port}!`));
 };
 
