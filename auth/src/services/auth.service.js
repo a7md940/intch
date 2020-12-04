@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { ParameterError } = require('@intch/common');
+const { createHash } = require('crypto');
 
 const UserService = require('./user.service');
 const config = require('./../config/config');
@@ -41,11 +42,10 @@ module.exports = class AuthService {
      * Verify token 
      * @param {string} token
      * @throws { jwt.TokenExpiredError | jwt.JsonWebTokenError} 
-     * @returns {Promise<User>}
+     * @returns {Promise<User>} 
      */
     verifyToken(token) {
         const decoded = jwt.verify(token, config.jwt.secret);
-        console.log(decoded)
         return this.userService.getById(decoded.userId);
     }
     /**
