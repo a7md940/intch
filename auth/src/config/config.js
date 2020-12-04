@@ -3,6 +3,7 @@ const { generateUUID } = require('../utils/functions');
 
 const config = {
     port: process.env.PORT || 8000,
+    appEmail: process.env.APP_EMAIL || 'in.touch.supprt@gmail.com',
     appId: `auth-${hostname()}-${generateUUID()}`,
     jwt: {
         secret: process.env.JWT_KEY || 'INTouch-app@0.1',

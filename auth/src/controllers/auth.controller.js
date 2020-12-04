@@ -3,6 +3,7 @@ const BaseController = require('@intch/common/base-controller');
 const { UnAuthorizedException, BadRequestException } = require('@intch/common/http-excptions');
 const jwt = require('jsonwebtoken');
 
+const config = require('./../config/config');
 const { User } = require('./../models/user');
 const { UserService, AuthService } = require('../services');
 const { SignupDto } = require('../dtos');
@@ -42,7 +43,7 @@ module.exports = class AuthController extends BaseController {
 
         const verificationCode = this.authService.generateToken(createdUser.id, createdUser.username, req.hostname, '5m');
         this.sendGridGateway.sendEmail(
-            'spyridon.casin@extraale.com',
+            config.appEmail,
             createdUser.email,
             'INTouch - Verification',
             `
