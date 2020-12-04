@@ -1,6 +1,6 @@
 const { DuplicateEntityError, NotFoundError } = require('@intch/common');
 const { ObjectId } = require('mongodb');
-    
+
 const UserRepository = require('../presistence/repositories/user.repository');
 const { User } = require('./../models/user')
 module.exports = class UserService {
@@ -36,8 +36,7 @@ module.exports = class UserService {
      * @returns {Promise<User>}
      */
     async getById(userId) {
-        const user = await this.userRepo.findOne({ _id: ObjectId(userId) });
-        return user;
+        return this.userRepo.findOne({ _id: ObjectId(userId) });
     }
 
     /**
@@ -61,7 +60,14 @@ module.exports = class UserService {
             // User not found to update
             throw new NotFoundError('User not found', 'UNFTUD8f');
         }
-        const updatedUser = await this.userRepo.updateOne(userId, data);
-        return updatedUser;
+        delete user._id;
+        delete user.id;
+        const dataToUpdate = { ...user, ...data };
+        await this.userRepo.updateOne(userId, dataToUpdate);
+        return this.getById(userId);
+    }
+
+    async getUserByUsername(username) {
+        return this.userRepo.findOne({ username })
     }
 }
