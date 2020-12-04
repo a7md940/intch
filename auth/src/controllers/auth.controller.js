@@ -3,27 +3,32 @@ const BaseController = require('@intch/common/base-controller');
 const { UnAuthorizedException, BadRequestException } = require('@intch/common/http-excptions');
 const jwt = require('jsonwebtoken');
 
+const { autoBind } = require('./../utils/functions');
 const config = require('./../config/config');
 const { User } = require('./../models/user');
 const { UserService, AuthService } = require('../services');
 const { SignupDto } = require('../dtos');
-const { redisStorage } = require('../utils/redis');
 const SendGridGateway = require('../gateways/send-grid.gateway');
-const { AesEncryptor } = require('../utils');
+const { AesEncryptor, DecodedToken } = require('../utils');
+const { RedisManager } = require('../utils/redis');
+
+
 module.exports = class AuthController extends BaseController {
 
+    /**
+     * 
+     * @param {UserService} userService 
+     * @param {AuthService} authService 
+     * @param {RedisManager} redis 
+     * @param {SendGridGateway} sendGridGateway 
+     */
     constructor(userService, authService, redis, sendGridGateway) {
         super();
-        /** @private @instance @type {AuthService}*/
         this.userService = userService;
-        /** @private @instance @type {UserService}*/
         this.authService = authService;
-        /** @private @type {typeof redisStorage} */
-
         this.redis = redis;
-        /** @private @instance @type {SendGridGateway}*/
-
         this.sendGridGateway = sendGridGateway;
+        autoBind(this);
     }
 
     /**
@@ -38,7 +43,7 @@ module.exports = class AuthController extends BaseController {
         this.sendGridGateway.sendEmail(
             config.appEmail,
             createdUser.email,
-            'INTouch - Verification',
+            'INTouch - Verification Code',
             `
             <html>
                 <head>
@@ -56,11 +61,10 @@ module.exports = class AuthController extends BaseController {
                             this is your verification code.
                         </p>
                         <p>
-                            note that this link will be expired in 5 minutes.
+                            note that this code will be expired in 5 minutes.
                         </p>
-                        <a href="#">
-                            code is: <b>${verificationCode}</b>
-                        </a>
+                        code is:
+                            <b>${verificationCode}</b>
                     </article>
                 </body>
             </html>
@@ -81,48 +85,70 @@ module.exports = class AuthController extends BaseController {
     }
 
     /**
-     * Verify user email function
-     * @param {express.Request} req Request
-     * @param {express.Response} res Response
-     */
-    async verifyUserEmail(req, res) {
-        /** @instance @type {User} */
-        let user = null;
-        try {
-            const verificationKey = req.query.key;
-            user = await this.authService.verifyToken(verificationKey);
-        } catch (exc) {
-            if (exc instanceof jwt.TokenExpiredError) {
-                throw new UnAuthorizedException('verifiyEmail:tokenExpired');
-            }
-            throw new UnAuthorizedException('verifiyEmail:tokenInvalid');
-        }
-
-        if (user) {
-            if (!user.verified) {
-                await this.authService.verifyUserEmail(user.id);
-                res.status(200)
-                    .send({ token: this.authService.generateToken(user.id, user.username, req.hostname) });
-            } else {
-                throw new BadRequestException('verifiyUserEmail:Useralreadyverified', 'UALDVfd20');
-            }
-        } else {
-            this.throwUnAuthorizedError(res, 'verifiyUserEmail:Invalid:verificatoin:key.', 'VEMxINV');
-        }
-    }
-
-    /**
      * 
-     * @param {Express.Request} req 
+     * @param {import('express').Request} req 
      * @param {import('express').Response} res 
      */
     async resetPassword(req, res) {
         const { password } = req.body;
         const { id, username } = req.currentUser;
         const hashedPassword = this.authService.hashPassword(password, username);
-
         const updatedUser = await this.userService.updateUser(id, { password: hashedPassword });
+        delete updatedUser.password;
+        delete updatedUser.verified;
         res.status(200)
             .send(updatedUser);
+    }
+
+    /**
+     * 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
+     */
+    async login(req, res) {
+        const { username, password } = req.body;
+        const user = await this.userService.getUserByUsername(username);
+        if (!user) {
+            throw new UnAuthorizedException('login:invalidUsername', 'AUTHUNfd100x');
+        }
+
+        if (user.password != this.authService.hashPassword(password, username)) {
+            throw new UnAuthorizedException('login:invalidPassword', 'AUTHPssD20x');
+        }
+
+        const refreshToken = this.authService.generateRefreshToken(user.id, req.hostname);
+        const token = this.authService.generateToken(user.id, user.username, req.hostname);
+  
+        // store refresh token in redis cache with expire date in redis equal to refresh token expire date.
+        // to be flushed automatically.
+        const { expiresIn } = new DecodedToken(refreshToken);
+        this.redis.add(refreshToken, user.id, expiresIn);
+
+        const response = { userId: user.id, token, refreshToken };
+        res.status(200)
+            .json(response);
+    }
+
+    async refreshToken(req, res) {
+        const { refreshToken } = req.body;
+        const user = await this.authService.verifyToken(refreshToken);
+
+        const decoded = new DecodedToken(refreshToken);
+        if (decoded.host !== req.hostname) {
+            throw new UnAuthorizedException('refreshToken:invalidHost', 'RxoNVSTH');
+        }
+
+        const userId = await this.redis.get(refreshToken)
+        .then(x => x ? x.replace(/\"/g, ''): null);
+        if (userId == null || (userId && userId != decoded.userId)) {
+            throw new UnAuthorizedException('refreshToken:invalid', 'RTINVxa5q');
+        }
+
+        this.redis.remove(refreshToken);
+        res.status(200)
+            .json({
+                token: this.authService.generateToken(userId, user.username, req.hostname),
+                refreshToken: this.authService.generateRefreshToken(userId, req.hostname)
+            });
     }
 }
