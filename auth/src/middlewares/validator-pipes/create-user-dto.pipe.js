@@ -25,6 +25,6 @@ module.exports = class CreateUserDtoPipe {
 
         const username = value.username.trim();
         const email = value.email;
-        return CreateUserDto.toDto({ username, email });
+        return CreateUserDto.toDto({ username, email, verified: null, password: null });
     }
 }
