@@ -1,5 +1,6 @@
 const { User } = require('./../../models/user');
-const { Db } = require('mongodb');
+const { Db, ObjectId } = require('mongodb');
+const convertUndefinedToNull = require('../../utils/functions/convert-undefined-to-null');
 
 module.exports = class UserRepository {
     /**
@@ -38,10 +39,11 @@ module.exports = class UserRepository {
      * @returns {Promise<User>}
      */
     create(data) {
+        const payload = convertUndefinedToNull(['verified', 'password'], data);
         return new Promise((resolve, reject) => {
-            this.User.insertOne(data, async (err, result) => {
+            this.User.insertOne(payload, async (err, result) => {
                 if (err) {
-                    reject(err);
+                    return reject(err);
                 }
                 const [createdUser] = result.ops;
                 createdUser.id = createdUser._id;
@@ -57,6 +59,6 @@ module.exports = class UserRepository {
      * @returns {Promise<User>} promise of updated user result.
      */
     updateOne(userId, data) {
-        return this.User.updateOne({ _id: userId }, { $set: data }, { upsert: true });
+        return this.User.updateOne({ _id: ObjectId(userId) }, { $set: data });
     }
 }
