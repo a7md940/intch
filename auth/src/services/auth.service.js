@@ -1,15 +1,13 @@
 const jwt = require('jsonwebtoken');
+const { ParameterError } = require('@intch/common');
 
 const UserService = require('./user.service');
 const config = require('./../config/config');
-const { ParameterError } = require('@intch/common');
 
 module.exports = class AuthService {
-    static diName = 'authService';
-
-    /** @private @type {UserService} */
-    userService;
+ 
     constructor(userService) {
+        /** @private @type {UserService} */
         this.userService = userService;
     }
     /**
@@ -61,5 +59,15 @@ module.exports = class AuthService {
             throw new ParameterError(['verified'], 'verifyUser:userAlreadyVerified');
         }
         return this.userService.updateUser(userId, { verified: true })
+    }
+
+    /**
+     * Hash the username and password, prevent any database admin to copy his password and upadtes somebody's password with.
+     * @param {string} password User password
+     * @param {string} username User name
+     * @returns {string} Hashed string.
+     */
+    hashPassword(password, username) {
+        return createHash(config.hashAlgo).update(username + password).digest('hex');
     }
 }

@@ -4,7 +4,7 @@
   "description": "INTouch authentication micro service.",
   "main": "main.js",
   "dependencies": {
-    "@intch/common": "^1.1.1",
+    "@intch/common": "^1.1.4",
     "awilix": "^4.3.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -20,7 +20,7 @@
   "scripts": {
     "test": "jest",
     "start": "node src/main.js",
-    "start:dev": "set NODE_ENV=dev&&nodemon src/main.js"
+    "start:dev": "set NODE_ENV=development&&nodemon src/main.js --legacy-watch"
   },
   "author": "Ahmed Radwan",
   "license": "ISC"

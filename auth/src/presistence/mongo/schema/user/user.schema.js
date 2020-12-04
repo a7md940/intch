@@ -31,7 +31,7 @@ module.exports = UserSchemaFactory = async mongoManager => {
                     password: {
                         bsonType: 'string',
                     },
-                    password: {
+                    verified: {
                         bsonType: 'bool',
                     },
                 }

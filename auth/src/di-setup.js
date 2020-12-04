@@ -17,13 +17,13 @@ const setupDi = async () => {
     container.register({
         db: awilix.asValue(db),
         redis: awilix.asValue(redisStorage),
-        [SendGridGateway.diName]: awilix.asClass(SendGridGateway),
+        sendGridGateway: awilix.asClass(SendGridGateway),
 
-        [AuthController.diName]: awilix.asClass(AuthController),
+        authController: awilix.asClass(AuthController),
 
-        [CreateUserDtoPipe.diName]: awilix.asClass(CreateUserDtoPipe),
+        createUserDtoPipe: awilix.asClass(CreateUserDtoPipe),
 
-        [AuthService.diName]: awilix.asClass(AuthService),
+        authService: awilix.asClass(AuthService),
         userService: awilix.asClass(UserService),
 
         userRepo: awilix.asClass(UserRepository),

@@ -13,7 +13,23 @@ services:
     ports:
       - "6379:6379"
 
+  intch.auth:
+    image: intch/auth:dev
+    depends_on:
+      - intch.mongodb
+      - intch.redis
+    env_file: 
+      - ./auth/.env.dev
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./auth
+    volumes:
+      - ./auth:/app
+      - /app/node_modules
+
 networks:
   default:
     external:
       name: intch
+volumes:
+  devvolume:

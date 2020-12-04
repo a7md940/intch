@@ -8,7 +8,7 @@ const config = require('../../config/config');
 
 const authRouter = express.Router();
 /** @instance @type {AuthController} */
-const authController = container.resolve(AuthController.diName);
+const authController = container.resolve('authController');
 
 authRouter.get(
     '/verify',

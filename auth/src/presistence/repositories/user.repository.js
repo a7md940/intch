@@ -2,12 +2,11 @@ const { User } = require('./../../models/user');
 const { Db } = require('mongodb');
 
 module.exports = class UserRepository {
-    /** @type {import('mongodb').Collection<User>} */
-    User;
     /**
      * @param {Db} db 
      */
     constructor(db) {
+        /** @type {import('mongodb').Collection<User>} */
         this.User = db.collection('users');
     }
 

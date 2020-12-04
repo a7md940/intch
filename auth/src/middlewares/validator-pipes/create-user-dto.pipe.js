@@ -5,7 +5,6 @@ const CreateUserDto = require('../../dtos/user/create-user.dto');
 const isEmail = (val) => true;
 
 module.exports = class CreateUserDtoPipe {
-    static diName = 'createUserDtoPipe';
     constructor() { }
 
     /**@returns {CreateUserDto} */

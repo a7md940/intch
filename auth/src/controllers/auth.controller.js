@@ -11,25 +11,19 @@ const { redisStorage } = require('../utils/redis');
 const SendGridGateway = require('../gateways/send-grid.gateway');
 const { AesEncryptor } = require('../utils');
 module.exports = class AuthController extends BaseController {
-    static diName = 'authController';
 
-    /** @private @type {typeof redisStorage} */
-    redis;
-
-    /** @private @instance @type {SendGridGateway}*/
-    sendGridGateway;
-
-    /** @private @instance @type {UserService}*/
-    userService;
-
-    /** @private @instance @type {AuthService}*/
-    authService;
 
     constructor(userService, authService, redis, sendGridGateway) {
         super();
+        /** @private @instance @type {AuthService}*/
         this.userService = userService;
+        /** @private @instance @type {UserService}*/
         this.authService = authService;
+        /** @private @type {typeof redisStorage} */
+
         this.redis = redis;
+        /** @private @instance @type {SendGridGateway}*/
+
         this.sendGridGateway = sendGridGateway;
     }
 
@@ -118,7 +112,18 @@ module.exports = class AuthController extends BaseController {
         }
     }
 
+    /**
+     * 
+     * @param {Express.Request} req 
+     * @param {import('express').Response} res 
+     */
     resetPassword = async (req, res) => {
-        res.send('OK')
+        const { password } = req.body;
+        const { id, username } = req.currentUser;
+        const hashedPassword = this.authService.hashPassword(password, username);
+
+        const updatedUser = await this.userService.updateUser(id, { password: hashedPassword });
+        res.status(200)
+            .send(updatedUser);
     }
 }

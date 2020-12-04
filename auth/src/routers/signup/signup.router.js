@@ -7,9 +7,9 @@ const { CreateUserDtoPipe } = require('../../middlewares/validator-pipes');
 
 const signupROuter = express.Router();
 /** @instance @type {AuthController} */
-const authController = container.resolve(AuthController.diName);
+const authController = container.resolve('authController');
 /** @instance @type {CreateUserDtoPipe} */
-const createUserDtoPipe = container.resolve(CreateUserDtoPipe.diName);
+const createUserDtoPipe = container.resolve('createUserDtoPipe');
 
 signupROuter.post(
     '/',

@@ -1,6 +1,6 @@
 const { DuplicateEntityError, NotFoundError } = require('@intch/common');
 const { ObjectId } = require('mongodb');
-
+    
 const UserRepository = require('../presistence/repositories/user.repository');
 const { User } = require('./../models/user')
 module.exports = class UserService {

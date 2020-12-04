@@ -22,7 +22,7 @@ const config = {
             password: process.env.SEND_GRID_PASSWORD || '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'
         }
     },
-    hashAlog: process.env.HASH_ALOG || 'md5',
+    hashAlgo: process.env.HASH_ALGO || 'md5',
     encyptionKey: process.env.ENC_KEY || '@EDFCGHHzar4w',
 };
 module.exports = config;
