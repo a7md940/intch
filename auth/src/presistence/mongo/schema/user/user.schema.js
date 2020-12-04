@@ -29,13 +29,13 @@ module.exports = UserSchemaFactory = async mongoManager => {
                         description: 'Must be email and is required'
                     },
                     password: {
-                        bsonType: 'string',
+                        bsonType: ['string', 'null'],
                     },
                     verified: {
-                        bsonType: 'bool',
-                    },
+                        bsonType: ['bool', 'null'],
+                    }, 
                 }
             }
         }
-    })
+    });
 };
