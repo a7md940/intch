@@ -50,7 +50,7 @@ module.exports = class ChatService {
         if (skip < 0) {
             skip = 0;
         }
-        console.log({ skip })
+
 
         return this.messageRepo.find(filterCriteria, { limit: pageSize, skip, sort: { creationDate: -1 } });
     }
