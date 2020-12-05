@@ -18,8 +18,25 @@ module.exports = class RedisManager {
         autoBind(this);
     }
 
-    get(key) {
-        return get(key);
+    /**
+     * 
+     * @param {string} key 
+     * @param {any} value 
+     * @returns {Promise<any>}
+     */
+    set(key, value) {
+        if (typeof value !== 'string') {
+            value = JSON.stringify(value);
+        }
+        return set(key, value);
+    }
+    /**
+     * 
+     * @returns {Promise<null | any>} 
+     */
+    async get(key) {
+        const data = await get(key);
+        return JSON.parse(data);
     }
     add(key, value, expireAt = null) {
         return new Promise((resolve, reject) => {
