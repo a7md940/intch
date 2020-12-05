@@ -1,0 +1,11 @@
+FROM node:10-alpine
+
+ENV NODE_ENV development
+
+WORKDIR /app
+
+COPY package.json package-lock.json /app/
+
+RUN npm install
+
+CMD ["npm", "run", "start:dev"]

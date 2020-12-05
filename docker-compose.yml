@@ -15,11 +15,13 @@ services:
 
   intch.nginx:
     image: nginx
+    container_name: intch/nginx
     ports:
       - 2020:80
     depends_on:
       - intch.auth
       - intch.client
+      - intch.chat
     build:
       dockerfile: Dockerfile-dev
       context: ./web-app/nginx
@@ -38,10 +40,25 @@ services:
       - ./auth:/app
       - /app/node_modules
 
+  intch.chat:
+    image: intch/chat:dev
+    depends_on:
+      - intch.mongodb
+      - intch.redis
+    env_file: 
+      - ./chat/.env.dev
+    build:
+      dockerfile: Dockerfile-dev
+      context: ./chat
+    volumes:
+      - ./chat:/app
+      - /app/node_modules
+
   intch.client:
     image: intch/web.client:dev
     depends_on: 
       - intch.auth
+      - intch.chat
     build:
       dockerfile: Dockerfile-dev
       context: ./web-app
@@ -53,5 +70,3 @@ networks:
   default:
     external:
       name: intch
-volumes:
-  devvolume:

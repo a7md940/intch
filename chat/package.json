@@ -1,0 +1,27 @@
+{
+  "name": "intch-chat",
+  "version": "1.0.0",
+  "description": "IN TOUCH Chat micro service",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node ./src/main.js",
+    "start:dev": "set NODE_ENV=development&&nodemon ./src/main.js --legacy-watch"
+  },
+  "author": "Ahmed Radwan",
+  "license": "ISC",
+  "dependencies": {
+    "@intch/common": "^1.1.6",
+    "awilix": "^4.3.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.3",
+    "redis": "^3.0.2",
+    "socket.io": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/socket.io": "^2.1.11",
+    "nodemon": "^2.0.6"
+  }
+}
