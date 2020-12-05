@@ -31,7 +31,7 @@ class MongoManager {
                 console.log('Connected Sucessfully with Database');
                 this[clientProp] = client;
 
-                this.db = this[clientProp].db('auth');
+                this.db = this[clientProp].db('chat');
                 resolve(this.db);
             });
         })

@@ -1,6 +1,5 @@
-const { User } = require('./../../models/user');
+const { User } = require('./../../models');
 const { Db, ObjectId } = require('mongodb');
-const convertUndefinedToNull = require('../../utils/functions/convert-undefined-to-null');
 
 module.exports = class UserRepository {
     /**
@@ -39,7 +38,6 @@ module.exports = class UserRepository {
      * @returns {Promise<User>}
      */
     create(data) {
-        const payload = convertUndefinedToNull(['verified', 'password'], data);
         return new Promise((resolve, reject) => {
             this.User.insertOne(payload, async (err, result) => {
                 if (err) {
