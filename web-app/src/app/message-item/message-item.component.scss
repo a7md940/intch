@@ -1,0 +1,31 @@
+.options-icon {
+  border-radius: 10px;
+}
+
+.message-item {
+  border-radius: 8px;
+  padding: .6rem;
+  margin: 8px;
+    color: black;
+  p {
+    margin: 0rem;
+  }
+}
+
+.btn-reset {
+  background-color: transparent;
+  border: none;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:active {
+    outline: none;
+  }
+}
+
+.message-time {
+    color: #00000073;
+}

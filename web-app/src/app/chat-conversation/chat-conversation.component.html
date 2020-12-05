@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col">
+
+    <div class="row">
+      <div class="col">
+        <div class="messages-wrapper" #messagesWrapper>
+          <button type="button" class="p-3 w-100 d-inline-block" (click)="loadMoreTen()">Load more..</button>
+          <ng-container *ngFor="let message of messages">
+            <div class="sent" *ngIf="message.userId == currentUserId">
+              <app-message-item [bgColor]="'#dcf8c6'" [chatMessage]="message"></app-message-item>
+            </div>
+            <div class="recieved" *ngIf="message.userId !== currentUserId">
+              <app-message-item [bgColor]="'#fff'" [chatMessage]="message"></app-message-item>
+            </div>
+          </ng-container>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="chat-input-wrapper">
+          <textarea class="chat-input" #chatInput></textarea>
+          <button type="button" class="send-message-button">
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -25,4 +25,11 @@ export class AuthService {
   signin(username: string, password: string): Observable<UserAuth> {
     return this._http.post<UserAuth>(`${this._config.authUrl}/signin`, { username, password });
   }
+
+  getUserAuth(): Observable<UserAuth | null> {
+    return new Observable(observer => {
+      const userAuth: UserAuth = localStorage.getItem('userAuth') ? JSON.parse(localStorage.getItem('userAuth') as string) : null;
+      observer.next(userAuth ? UserAuth.build(userAuth) : null);
+    });
+  }
 }

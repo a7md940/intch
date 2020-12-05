@@ -12,6 +12,9 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
+import { ChatUserListComponent } from './chat-user-list/chat-user-list.component';
+import { MessageItemComponent } from './message-item/message-item.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { HomeComponent } from './home/home.component';
     ResendVerificationComponent,
     ResetPasswordComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    ChatConversationComponent,
+    ChatUserListComponent,
+    MessageItemComponent
   ],
   imports: [
     FormsModule,

@@ -15,7 +15,7 @@ services:
 
   intch.nginx:
     image: nginx
-    container_name: intch/nginx
+    container_name: intch_nginx
     ports:
       - 2020:80
     depends_on:
