@@ -26,6 +26,9 @@ module.exports = class App {
         this.expressInstance.use(bodyParser.urlencoded({ extended: true }));
         this.expressInstance.get('/health', (req, res) => res.send('ok'))
 
+        const messageRouter = require('./routers/message.router');
+        this.expressInstance.use('/message', messageRouter);
+
         this.server.listen(config.port, () => {
             console.log('App listening on port ', config.port);
         });
