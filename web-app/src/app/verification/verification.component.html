@@ -1,6 +1,25 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
-    <input formControlName="code" name="verificatoinCode" type="text" />
-    <button type="submit">
-        Verify
-    </button>
-</form>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form class="w-100" [formGroup]="form" (ngSubmit)="submit()">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <input class="form-control form-control-sm" formControlName="code" name="verificatoinCode"
+                                type="text"
+                                placeholder="Please enter the verification code here..." />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            Verify
+                        </button>
+                    </div>
+                </div>
+                <a [routerLink]="['/resend-verification']">
+                    resend verification code
+                </a>
+            </form>
+        </div>
+    </div>
+</div>

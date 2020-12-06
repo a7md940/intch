@@ -1,4 +1,20 @@
-<form [formGroup]="form" (ngSubmit)="resendEmail();">
-    <input formControlName="email" type="email" />
-    <input type="submit" value="resend" />
-</form>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form class="w-100" [formGroup]="form" (ngSubmit)="resendEmail();">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="form-group">
+                            <input class="form-control form-control-sm" formControlName="email" type="email"
+                                placeholder="Please enter your email" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <input class="btn btn-sm btn-primary" type="submit" value="resend" />
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
