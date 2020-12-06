@@ -3,6 +3,7 @@ import { ChatMessage } from '../models';
 import { AuthService } from '../services/auth.service';
 import { ChatServiceService } from '../services/chat-service.service';
 import { SocketService } from '../services/socket.service';
+import { PagedList } from '../utils';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -21,10 +22,12 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
   currentUserId!: string;
 
   @Input()
-  messages: ChatMessage[] = [];
+  messages!: PagedList<ChatMessage>;
+
+  pageIndex = 0;
+  totalCount = 0;
 
   pageSize = 10;
-  pageIndex = 0;
 
   constructor(
     private _authService: AuthService,
@@ -57,19 +60,26 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
     // }
   }
 
+  private _hideLoadMore(pageIndex: number, pagedList: PagedList<any>): boolean {
+    return (pageIndex + 1) * pagedList.pageSize >= pagedList.count;
+  }
   loadMoreTen(): void {
     this.pageIndex++;
-    this._chatService.getRoomMessages(this.roomName, { pageSize: this.pageSize, pageIndex: this.pageIndex })
-    .subscribe((messages) => {
-      this.messages.unshift(...messages);
-    });
+    if (this.messages.count && this.messages.count > this.messages.pageSize * this.pageIndex) {
+      this._chatService.getRoomMessages(this.roomName, { pageSize: this.pageSize, pageIndex: this.pageIndex })
+        .subscribe((pagedList) => {
+          this.pageSize = pagedList.pageSize;
+          this.totalCount = pagedList.count;
+          this.messages.collection.unshift(...pagedList.collection);
+        });
+    }
   }
 
 
   listenToIncommingMessages(): void {
     this._chatService.listenToRoom(this.roomName)
       .subscribe((message) => {
-        this.messages.push(message);
+        this.messages.collection.push(message);
       });
   }
 
@@ -82,7 +92,7 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
       });
       this._chatService.sendMessage(this.roomName, chatMessaeg)
         .subscribe((chatMessage) => {
-          this.messages.push(chatMessaeg);
+          this.messages.collection.push(chatMessaeg);
         });
     }
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatMessage } from '../models';
 import { ChatServiceService } from '../services/chat-service.service';
+import { PagedList } from '../utils';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,7 @@ import { ChatServiceService } from '../services/chat-service.service';
 })
 export class HomeComponent implements OnInit {
   roomName = 'global:chat:message';
-  messages!: ChatMessage[];
+  messages!: PagedList<ChatMessage>;
 
   constructor(private _chatService: ChatServiceService) { }
 
@@ -18,6 +19,6 @@ export class HomeComponent implements OnInit {
   }
   getLatestMessages(): void {
     this._chatService.getRoomMessages(this.roomName)
-      .subscribe((messages) => this.messages = messages);
+      .subscribe((pagedList) => this.messages = pagedList);
   }
 }

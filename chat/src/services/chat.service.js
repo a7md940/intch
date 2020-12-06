@@ -1,6 +1,5 @@
 
-const autoBind = require('@intch/common/utils/auto-bind');
-
+const { PagedList, autoBind } = require('@intch/common/utils');
 const { Message } = require('../models');
 const idResolver = require('../presistence/id-resolver');
 const { MessageRepository, UserRepository } = require('./../presistence/repositories');
@@ -36,23 +35,39 @@ module.exports = class ChatService {
         return createdMessage;
     }
 
-    async getAll(roomName, userId, { pageSize, pageIndex } = {}) {
+    async getAll(roomName, userId, { pageIndex } = {}, withTopTen = true) {
+        const PAGE_SIZE = 10;
         const filterCriteria = { $or: [{ roomName }, { userId: idResolver(userId) }] };
         const count = await this.messageRepo.count(filterCriteria);
-
         const redisCacheCount = 10;
-        let skip = (redisCacheCount + (pageSize * pageIndex));
-        if (skip > count) {
-            skip = redisCacheCount;
-        } else {
-            skip = count - redisCacheCount;
+        let skip = 0;
+
+        if (PAGE_SIZE > 0 && pageIndex > 0) {
+            skip = (redisCacheCount + (PAGE_SIZE * pageIndex));
+        }
+
+        if (withTopTen) {
+            if (skip > count) {
+                skip = redisCacheCount;
+            } else {
+                skip = count - redisCacheCount;
+            }
         }
         if (skip < 0) {
             skip = 0;
         }
 
-
-        return this.messageRepo.find(filterCriteria, { limit: pageSize, skip, sort: { creationDate: -1 } });
+        const messages = await this.messageRepo.find(filterCriteria, { limit: PAGE_SIZE, skip, sort: { creationDate: -1 } });
+        /**
+         * @type {PagedList<Message>}
+         */
+        const result = PagedList.build({
+            collection: messages.map(Message.build),
+            count,
+            pageSize: PAGE_SIZE,
+            pageIndex
+        });
+        return result;
     }
 
 }

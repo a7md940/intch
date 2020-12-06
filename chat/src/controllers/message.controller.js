@@ -1,4 +1,4 @@
-const { autoBind } = require('@intch/common/utils');
+const { autoBind, PagedList } = require('@intch/common/utils');
 
 const ChatService = require('../services/chat.service');
 const RedisManager = require('../utils/redis/redis-manager');
@@ -34,21 +34,31 @@ module.exports = class MessageController {
     }
 
     async getAll(req, res, next) {
-        const { roomName, topTen, pageSize, pageIndex } = req.query;
+        const PAGE_SIZE = 10;
+        let { roomName, topTen, pageIndex } = req.query;
         const currentUserId = req.currentUser.id;
-        if (topTen) {
-            const topTenMessages = await this.redis.get(`latest:messages:${roomName}`);
+
+        if (!pageIndex) {
+            const [topTenMessages, count] = await Promise.all([
+                this.redis.get(`latest:messages:${roomName}`),
+                this.redis.get(`messages:count:for:room:${roomName}`),
+            ]);
             if (Array.isArray(topTenMessages) && topTenMessages.length > 0) {
+                console.dir({ topTenMessages, count })
                 return res.status(200)
-                    .send(topTenMessages)
+                    .send(PagedList.build({ collection: topTenMessages, count, pageSize: PAGE_SIZE, pageIndex: 0 }));
             }
         }
-        const messages = await this.chatService.getAll(roomName, currentUserId, { pageSize: +pageSize, pageIndex: +pageIndex });
+
+        pageIndex = pageIndex ? +pageIndex : null;
+        const messages = await this.chatService.getAll(roomName, currentUserId, { pageIndex });
+
         res.send(messages);
     }
 
-    _storeToTopTenMessages(roomName, message) {
+    async _storeToTopTenMessages(roomName, message) {
         const key = `latest:messages:${roomName}`;
+        const countKey = `messages:count:for:room:${roomName}`;
         this.redis.get(key)
             .then(async (val) => {
                 if (!val) {
@@ -61,5 +71,9 @@ module.exports = class MessageController {
                     this.redis.set(key, [...top10LatestMessages, message]);
                 }
             });
+        this.chatService.getAll(roomName)
+            .then((pagedList) => (console.log({ pagedList }), pagedList))
+            .then((pagedList) => this.redis.set(countKey, pagedList.count))
+
     }
 }
