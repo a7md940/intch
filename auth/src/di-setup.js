@@ -6,6 +6,7 @@ const { getDbInstance } = require('./presistence/db');
 const { CreateUserDtoPipe } = require('./middlewares/validator-pipes');
 const { RedisManager } = require('./utils/redis');
 const { SendGridGateway } = require('./gateways');
+const NatsWrapper = require('./nats-wrapper');
 
 const container = awilix.createContainer({
     injectionMode: awilix.InjectionMode.CLASSIC
@@ -14,11 +15,11 @@ const container = awilix.createContainer({
 const setupDi = async () => {
     const db = await getDbInstance();
 
-    container.register({
-        db: awilix.asValue(db),
-        redis: awilix.asClass(RedisManager),
+    return container.register({
+        db: awilix.asValue(db, { lifetime: awilix.Lifetime.SINGLETON }),
+        redis: awilix.asClass(RedisManager, { lifetime: awilix.Lifetime.SINGLETON }),
         sendGridGateway: awilix.asClass(SendGridGateway),
-
+        nats: awilix.asClass(NatsWrapper, { lifetime: awilix.Lifetime.SINGLETON }),
         authController: awilix.asClass(AuthController),
         verificationController: awilix.asClass(VerificationController),
 

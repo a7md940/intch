@@ -14,6 +14,9 @@ const config = {
         port: process.env.REDIS_PORT || '6379',
         host: process.env.REDIS_HOST || 'localhost'
     },
+    natsConfig: {
+        url: process.env.NATS_URI || 'nats://intch.nats:4222'
+    },
     sendGrid: {
         host: process.env.NOTIFICATION_MAIL_HOST || 'smtp.sendgrid.net',
         port: process.env.NOTIFICATION_MAIL_PORT || 587,

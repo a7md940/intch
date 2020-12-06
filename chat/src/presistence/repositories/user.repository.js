@@ -1,5 +1,6 @@
 const { User } = require('./../../models');
 const { Db, ObjectId } = require('mongodb');
+const idResolver = require('./../id-resolver');
 
 module.exports = class UserRepository {
     /**
@@ -38,8 +39,12 @@ module.exports = class UserRepository {
      * @returns {Promise<User>}
      */
     create(data) {
+        if (data.id) {
+           data.userId = ObjectId(data.id);
+           delete data.id;
+        }
         return new Promise((resolve, reject) => {
-            this.User.insertOne(payload, async (err, result) => {
+            this.User.insertOne(data, async (err, result) => {
                 if (err) {
                     return reject(err);
                 }
@@ -57,6 +62,6 @@ module.exports = class UserRepository {
      * @returns {Promise<User>} promise of updated user result.
      */
     updateOne(userId, data) {
-        return this.User.updateOne({ _id: ObjectId(userId) }, { $set: data });
+        return this.User.updateOne({ userId: idResolver(userId) }, { $set: data });
     }
 }

@@ -4,12 +4,14 @@
     <div class="row">
       <div class="col">
         <div class="messages-wrapper" #messagesWrapper>
-          <button *ngIf="messages?.count > (pageIndex + 1) * messages?.pageSize"
-            type="button"
-            class="p-3 w-100 d-inline-block"
-            (click)="loadMoreTen()">
-            Load more..
-          </button>
+          <ng-container *ngIf="messages as pagedList">
+            <button *ngIf="pagedList.count > (pageIndex + 1) * pagedList.pageSize"
+              type="button"
+              class="p-3 w-100 d-inline-block"
+              (click)="loadMoreTen()">
+              Load more..
+            </button>
+          </ng-container>
           <ng-container *ngFor="let message of messages?.collection">
             <div class="sent" *ngIf="message.userId == currentUserId">
               <app-message-item [bgColor]="'#dcf8c6'" [chatMessage]="message"></app-message-item>

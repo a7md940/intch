@@ -1,18 +1,15 @@
 const express = require('express');
 const BaseController = require('@intch/common/base-controller');
-const { UnAuthorizedException, BadRequestException } = require('@intch/common/http-excptions');
-const jwt = require('jsonwebtoken');
+const { UnAuthorizedException } = require('@intch/common/http-excptions');
 
 const { autoBind } = require('./../utils/functions');
 const config = require('./../config/config');
-const { User } = require('./../models/user');
 const { UserService, AuthService } = require('../services');
-const { SignupDto } = require('../dtos');
+
 const SendGridGateway = require('../gateways/send-grid.gateway');
-const { AesEncryptor, DecodedToken } = require('../utils');
+const { DecodedToken } = require('../utils');
 const { RedisManager } = require('../utils/redis');
-
-
+const NatsWrapper = require('./../nats-wrapper')
 module.exports = class AuthController extends BaseController {
 
     /**
@@ -20,14 +17,17 @@ module.exports = class AuthController extends BaseController {
      * @param {UserService} userService 
      * @param {AuthService} authService 
      * @param {RedisManager} redis 
-     * @param {SendGridGateway} sendGridGateway 
+     * @param {SendGridGateway} sendGridGateway
+     * @param {NatsWrapper} nats
      */
-    constructor(userService, authService, redis, sendGridGateway) {
+    constructor(userService, authService, redis, sendGridGateway, nats) {
         super();
         this.userService = userService;
         this.authService = authService;
         this.redis = redis;
         this.sendGridGateway = sendGridGateway;
+        this.nats = nats;
+
         autoBind(this);
     }
 
@@ -75,6 +75,7 @@ module.exports = class AuthController extends BaseController {
             .then(console.log)
             .catch(console.error);
 
+        this.nats.publish('user:created', createdUser);
         // const token = this.authService.generateToken(createdUser.id, createdUser.username, req.hostname);
         // const refreshToken = this.authService.generateRefreshToken(createdUser.id, req.hostname);
 
@@ -120,7 +121,7 @@ module.exports = class AuthController extends BaseController {
 
         const refreshToken = this.authService.generateRefreshToken(user.id, req.hostname);
         const token = this.authService.generateToken(user.id, user.username, req.hostname);
-  
+
         // store refresh token in redis cache with expire date in redis equal to refresh token expire date.
         // to be flushed automatically.
         const { expiresIn } = new DecodedToken(refreshToken);
@@ -141,7 +142,7 @@ module.exports = class AuthController extends BaseController {
         }
 
         const userId = await this.redis.get(refreshToken)
-        .then(x => x ? x.replace(/\"/g, ''): null);
+            .then(x => x ? x.replace(/\"/g, '') : null);
         if (userId == null || (userId && userId != decoded.userId)) {
             throw new UnAuthorizedException('refreshToken:invalid', 'RTINVxa5q');
         }

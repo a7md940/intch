@@ -3,6 +3,7 @@ version: "3.4"
 services:
   intch.mongodb:
     image: mongo:3.6
+    container_name: intch_mognodb
     ports:
       - "27017:27017"
     volumes:
@@ -10,8 +11,16 @@ services:
 
   intch.redis:
     image: redis:latest
+    container_name: intch_redis
     ports:
       - "6379:6379"
+
+  intch.nats:
+    image: nats-streaming
+    container_name: intch_nats
+    hostname: nats-srv
+    expose:
+      - "4222"
 
   intch.nginx:
     image: nginx
@@ -28,6 +37,7 @@ services:
 
   intch.auth:
     image: intch/auth:dev
+    container_name: intch_auth
     depends_on:
       - intch.mongodb
       - intch.redis
@@ -42,6 +52,7 @@ services:
 
   intch.chat:
     image: intch/chat:dev
+    container_name: intch_chat
     depends_on:
       - intch.mongodb
       - intch.redis
@@ -56,6 +67,7 @@ services:
 
   intch.client:
     image: intch/web.client:dev
+    container_name: intch_web_client
     depends_on: 
       - intch.auth
       - intch.chat

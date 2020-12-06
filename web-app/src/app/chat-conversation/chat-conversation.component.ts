@@ -60,9 +60,6 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
     // }
   }
 
-  private _hideLoadMore(pageIndex: number, pagedList: PagedList<any>): boolean {
-    return (pageIndex + 1) * pagedList.pageSize >= pagedList.count;
-  }
   loadMoreTen(): void {
     this.pageIndex++;
     if (this.messages.count && this.messages.count > this.messages.pageSize * this.pageIndex) {

@@ -1,12 +1,14 @@
 const bodyParser = require('body-parser');
 
-const { container, setupDi } = require('./di-setup');
+const { setupDi } = require('./di-setup');
 const app = require('./app');
 const config = require('./config/config');
 
 const bootstrap = async () => {
-    await setupDi();
-
+    const container = await setupDi();
+    const nats = container.resolve('nats');
+    nats.setup();
+    
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
 

@@ -18,11 +18,14 @@ module.exports = UserSchemaFactory = async mongoManager => {
         validator: {
             $jsonSchema: {
                 bsonType: 'object',
-                required: ['username', 'email'],
+                required: ['username', 'email', 'userId'],
                 properties: {
                     username: {
                         bsonType: 'string',
                         description: 'must be a string and is required'
+                    },
+                    userId: {
+                        bsonType: 'objectId',
                     },
                     email: {
                         bsonType: 'string',

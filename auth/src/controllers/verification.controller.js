@@ -1,5 +1,5 @@
 const { NotFoundError } = require('@intch/common');
-const { UnAuthorizedException } = require('@intch/common/http-excptions');
+const { UnAuthorizedException, BadRequestException } = require('@intch/common/http-excptions');
 
 const jwt = require('jsonwebtoken');
 
@@ -7,17 +7,20 @@ const { autoBind } = require("../utils/functions");
 const { AuthService, UserService } = require('./../services');
 const { SendGridGateway } = require('./../gateways');
 const config = require('../config/config');
+const NatsWrapper = require('../nats-wrapper');
 module.exports = class VerificationController {
     /**
      * 
      * @param {AuthService} authService 
      * @param {UserService} userService 
      * @param {SendGridGateway} sendGridGateway 
+     * @param {NatsWrapper} nats 
      */
-    constructor(authService, userService, sendGridGateway) {
+    constructor(authService, userService, sendGridGateway, nats) {
         this.authService = authService;
         this.userService = userService;
         this.sendGridGateway = sendGridGateway;
+        this.nats = nats;
         autoBind(this);
     }
 
@@ -42,6 +45,7 @@ module.exports = class VerificationController {
         if (user) {
             if (!user.verified) {
                 await this.authService.verifyUserEmail(user.id);
+                this.nats.publish('user:verified', { id: user.id });
                 res.status(200)
                     .send({
                         token: this.authService.generateToken(user.id, user.username, req.hostname)

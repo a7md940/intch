@@ -1,9 +1,17 @@
+const { hostname } = require('os');
+const { randomBytes } = require('crypto');
+
+const uuid = (range = 16) => {
+    return randomBytes(range).toString('hex')
+};
+
 module.exports = {
     port: process.env.PORT || 8007,
     redis: {
         host: process.env.REDIS_HOST || 'localhost',
         port: process.env.REDIS_PORT || '6379'
     },
+    appId: `chat-${hostname()}-${uuid(10)}`,
     jwt: {
         secret: process.env.JWT_SECRET || 'INTouch-app@0.1'
     },
