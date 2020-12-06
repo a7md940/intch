@@ -19,8 +19,7 @@ services:
     image: nats-streaming
     container_name: intch_nats
     hostname: nats-srv
-    expose:
-      - "4222"
+
 
   intch.nginx:
     image: nginx
