@@ -5,7 +5,7 @@
       <div class="col">
         <div class="messages-wrapper" #messagesWrapper>
           <ng-container *ngIf="messages as pagedList">
-            <button *ngIf="pagedList.count > (pageIndex + 1) * pagedList.pageSize"
+            <button *ngIf="pagedList.count > pagedList.collection.length"
               type="button"
               class="p-3 w-100 d-inline-block"
               (click)="loadMoreTen()">

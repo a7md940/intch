@@ -35,7 +35,7 @@ module.exports = class MessageController {
 
     async getAll(req, res, next) {
         const PAGE_SIZE = 10;
-        let { roomName, topTen, pageIndex } = req.query;
+        let { roomName, pageIndex } = req.query;
         const currentUserId = req.currentUser.id;
 
         if (!pageIndex) { 
@@ -50,7 +50,7 @@ module.exports = class MessageController {
         }
 
         pageIndex = pageIndex ? +pageIndex : null;
-        const messages = await this.chatService.getAll(roomName, currentUserId, { pageIndex }, !!pageIndex);
+        const messages = await this.chatService.getAll(roomName, currentUserId, { pageIndex });
 
         res.send(messages);
     }

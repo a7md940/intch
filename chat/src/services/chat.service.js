@@ -35,30 +35,17 @@ module.exports = class ChatService {
         return createdMessage;
     }
 
-    async getAll(roomName, userId, { pageIndex } = {}, withTopTen = true) {
+    async getAll(roomName, userId, { pageIndex } = {}) {
         const PAGE_SIZE = 10;
         const filterCriteria = { $or: [{ roomName }, { userId: idResolver(userId) }] };
-        const count = await this.messageRepo.count(filterCriteria);
-        const redisCacheCount = 10;
-        let skip = 0;
+        let skip = PAGE_SIZE * pageIndex;
 
-        if (PAGE_SIZE > 0 && pageIndex > 0) {
-            skip = (redisCacheCount + (PAGE_SIZE * pageIndex));
-        }
+        let [messages, count] = await Promise.all([
+            this.messageRepo.find(filterCriteria, { limit: PAGE_SIZE, skip, sort: { creationDate: -1 } }),
+            this.messageRepo.count(filterCriteria)
+        ]);
+        messages = messages.sort((a, b) => new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime());
 
-        if (withTopTen) {
-            // TODO Fix skip value
-            if (skip > count) {
-                skip = skip - count;
-            } else {
-                skip = count - skip;
-            }
-        }
-        if (skip < 0) {
-            skip = 0;
-        }
-
-        const messages = await this.messageRepo.find(filterCriteria, { limit: PAGE_SIZE, skip, sort: { creationDate: 1 } });
         /**
          * @type {PagedList<Message>}
          */
