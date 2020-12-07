@@ -38,17 +38,17 @@ module.exports = class MessageController {
         let { roomName, topTen, pageIndex } = req.query;
         const currentUserId = req.currentUser.id;
 
-        if (!pageIndex) {
-            const [topTenMessages, count] = await Promise.all([
-                this.redis.get(`latest:messages:${roomName}`),
-                this.redis.get(`messages:count:for:room:${roomName}`),
-            ]);
-            if (Array.isArray(topTenMessages) && topTenMessages.length > 0) {
-                console.dir({ topTenMessages, count })
-                return res.status(200)
-                    .send(PagedList.build({ collection: topTenMessages, count, pageSize: PAGE_SIZE, pageIndex: 0 }));
-            }
-        }
+        // if (!pageIndex) {
+        //     const [topTenMessages, count] = await Promise.all([
+        //         this.redis.get(`latest:messages:${roomName}`),
+        //         this.redis.get(`messages:count:for:room:${roomName}`),
+        //     ]);
+        //     if (Array.isArray(topTenMessages) && topTenMessages.length > 0) {
+        //         console.dir({ topTenMessages, count })
+        //         return res.status(200)
+        //             .send(PagedList.build({ collection: topTenMessages, count, pageSize: PAGE_SIZE, pageIndex: 0 }));
+        //     }
+        // }
 
         pageIndex = pageIndex ? +pageIndex : null;
         const messages = await this.chatService.getAll(roomName, currentUserId, { pageIndex });

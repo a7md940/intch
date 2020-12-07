@@ -1,6 +1,6 @@
 module.exports = class Message {
 
-    constructor({ message, userId, creationDate, roomName }, id = null) {
+    constructor({ message, userId, creationDate, roomName, user }, id = null) {
         if (id) {
             /**
              * @type {string}
@@ -11,6 +11,10 @@ module.exports = class Message {
         this.userId = userId;
         this.creationDate = new Date(creationDate);
         this.roomName = roomName;
+
+        if (user) {
+            this.user = user;
+        }
     }
 
     /**
