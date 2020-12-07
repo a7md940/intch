@@ -1,5 +1,8 @@
 {
     "errors": {
-        "createUser:username:exists": "هذا المستخدم موجود بالفعل"
+        "createUser:username:exists": "هذا المستخدم موجود بالفعل",
+        "createUser:email:exists": "هذا الايميل مستخدم من قبل",
+        "resendVerificationCode:userAlreadyVerified": "هذا المستخدم فعال بالفعل."
+
     }
 }

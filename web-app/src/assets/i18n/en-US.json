@@ -1,5 +1,7 @@
 {
     "errors": {
-        "createUser:username:exists": "Username is already exists"
+        "createUser:username:exists": "Username is already exists",
+        "createUser:email:exists": "Email is already exists.",
+        "resendVerificationCode:userAlreadyVerified": "User already verified."
     }
 }

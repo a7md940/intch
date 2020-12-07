@@ -4,7 +4,7 @@ import { User } from '../models/user';
 
 interface IChatMessageItem extends ChatMessage {
   user: User;
-  options: any[];
+  options?: any[];
 }
 @Component({
   selector: 'app-message-item',

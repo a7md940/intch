@@ -8,7 +8,7 @@
                             <div class="form-group">
                                 <input class="form-control form-control-sm" type="text" placeholder="username"
                                     formControlName="username" />
-                                <ng-container *ngIf="form.get('username')['touched'] && form.get('username')['errors'] as userNameErrors">
+                                <ng-container *ngIf="form.controls.username && form.controls.username['touched'] && form.controls.username['errors'] as userNameErrors">
                                     <div class="ng-invalid-error">
                                         <p *ngIf="userNameErrors.required">
                                             Username is required.
@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <input class="form-control form-control-sm" type=" text" placeholder="Email"
                                     formControlName="email" />
-                                <ng-container *ngIf="form.get('email')['touched'] && form.get('email')['errors'] as emailErrors">
+                                <ng-container *ngIf="form.controls.email && form.controls.email['touched'] && form.controls.email['errors'] as emailErrors">
                                     <div class="ng-invalid-error">
                                         <p *ngIf="emailErrors.required">
                                             Email is required.
@@ -42,9 +42,16 @@
                                 Signup
                             </button>
                         </div>
-
                     </div>
-
+                    <div class="row position-absolute">
+                        <div class="col">
+                            <ng-container *ngIf="httpError && httpError.message">
+                                <p class="ng-invalid-error">
+                                    {{ 'errors.' + httpError.message | translate }}
+                                </p>
+                            </ng-container>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

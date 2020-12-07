@@ -1,9 +1,8 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ChatMessage } from '../models';
 import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 import { ChatServiceService } from '../services/chat-service.service';
-import { SocketService } from '../services/socket.service';
 import { PagedList } from '../utils';
 
 @Component({

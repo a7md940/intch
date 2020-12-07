@@ -1,4 +1,4 @@
-const { NotFoundError } = require('@intch/common');
+const { NotFoundError, ParameterError } = require('@intch/common');
 const { UnAuthorizedException, BadRequestException } = require('@intch/common/http-excptions');
 
 const jwt = require('jsonwebtoken');
@@ -63,6 +63,10 @@ module.exports = class VerificationController {
         const user = await this.userService.getUserByEmail(email);
         if (!user) {
             throw new NotFoundError('resendVerificationCode:userNotFound', 'RSVEMusntd57f');
+        }
+
+        if (user.verified) {
+            throw new ParameterError(['verificationCode'], 'resendVerificationCode:userAlreadyVerified', null, 'RVCUAV_182');
         }
 
         // TODO: store verification code to redis so if user decided to resend the verification code, the first one will expire so we will replace it with the new one

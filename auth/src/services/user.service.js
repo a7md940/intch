@@ -17,14 +17,15 @@ module.exports = class UserService {
      * @throws {DuplicateEntityError}
      */
     async create(user) {
-        const existingUser = await this.userRepo.findOne({
-            $or: [
-                { email: user.email },
-                { username: user.username }
-            ]
-        });
+        const [existingUser, existingEmail] = await Promise.all([
+            this.userRepo.findOne({ username: user.username }),
+            this.userRepo.findOne({ email: user.email }),
+        ]);
         if (existingUser) {
-            throw new DuplicateEntityError('createUser:username:exists')
+            throw new DuplicateEntityError('createUser:username:exists', 'CUE_0xq');
+        }
+        if (existingEmail) {
+            throw new DuplicateEntityError('createUser:email:exists', 'CEE_0xd');
         }
         const createdUser = await this.userRepo.create(user);
         return createdUser;

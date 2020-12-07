@@ -1,20 +1,27 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <form class="w-100" [formGroup]="form" (ngSubmit)="resendEmail();">
-                <div class="row">
-                    <div class="col-10">
-                        <div class="form-group">
-                            <input class="form-control form-control-sm" formControlName="email" type="email"
-                                placeholder="Please enter your email" />
+<div class="resend-verification-wrapper h-100vh">
+    <div class="resend-verification-container container">
+        <div class="row">
+            <div class="col-12">
+                <form class="w-100" [formGroup]="form" (ngSubmit)="resendEmail();">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="form-group">
+                                <input class="form-control form-control-sm" formControlName="email" type="email"
+                                    placeholder="Please enter your email" />
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <input class="btn btn-sm btn-primary" type="submit" value="resend" />
                         </div>
                     </div>
-                    <div class="col-2">
-                        <input class="btn btn-sm btn-primary" type="submit" value="resend" />
-                    </div>
-                </div>
-            </form>
+                    <app-http-error-viewer *ngIf="httpError" [httpError]="httpError">
+                    </app-http-error-viewer>
+                    <ng-container *ngIf="httpError.error.message === 'resendVerificationCode:userAlreadyVerified'">
+                        <a [routerLink]="['/login']">Login</a>
+                    </ng-container>
+                </form>
 
+            </div>
         </div>
     </div>
 </div>

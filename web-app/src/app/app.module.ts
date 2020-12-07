@@ -2,15 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SignupComponent } from './signup/signup.component';
 import {
     HttpClient,
     HttpClientModule,
     HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { SignupComponent } from './signup/signup.component';
 import { VerificationComponent } from './verification/verification.component';
 import { ResendVerificationComponent } from './resend-verification/resend-verification.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
@@ -21,6 +21,7 @@ import { ChatConversationComponent } from './chat-conversation/chat-conversation
 import { ChatUserListComponent } from './chat-user-list/chat-user-list.component';
 import { MessageItemComponent } from './message-item/message-item.component';
 import { HttpLoaderFactory } from './i18n-loader.fn';
+import { HttpErrorViewerComponent } from './common/http-error-viewer/http-error-viewer.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { HttpLoaderFactory } from './i18n-loader.fn';
         ChatConversationComponent,
         ChatUserListComponent,
         MessageItemComponent,
+        HttpErrorViewerComponent,
     ],
     imports: [
         FormsModule,
@@ -47,6 +49,7 @@ import { HttpLoaderFactory } from './i18n-loader.fn';
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient],
             },
+            defaultLanguage: 'en-US'
         }),
     ],
     providers: [

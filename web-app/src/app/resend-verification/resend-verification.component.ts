@@ -6,44 +6,43 @@ import { VerificationService } from '../services/verification.service';
 import { AppValidator } from '../utils/app-validators';
 
 @Component({
-  selector: 'app-resend-verification',
-  templateUrl: './resend-verification.component.html',
-  styleUrls: ['./resend-verification.component.scss']
+    selector: 'app-resend-verification',
+    templateUrl: './resend-verification.component.html',
+    styleUrls: ['./resend-verification.component.scss'],
 })
 export class ResendVerificationComponent implements OnInit {
-  form = new FormGroup({
-    email: new FormControl(null, [AppValidator.required, AppValidator.email])
-  });
-  email!: string;
-  emailResendSuccess = false;
-  emailResendError: HttpErrorResponse | null = null;
+    form = new FormGroup({
+        email: new FormControl(null, [
+            AppValidator.required,
+            AppValidator.email,
+        ]),
+    });
+    email!: string;
+    emailResendSuccess = false;
+    httpError: HttpErrorResponse | null = null;
+    constructor(
+        private _verificationService: VerificationService,
+        private _router: Router
+    ) {}
 
-  constructor(
-    private _verificationService: VerificationService,
-    private _router: Router
-  ) { }
+    ngOnInit(): void {}
 
-  ngOnInit(): void {
-  }
-
-  resendEmail(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      console.log(this.form);
-      return;
-    }
-
-    this.email = this.form.value.email;
-    this._verificationService.resendEmail(this.email)
-      .subscribe(
-        (resp) => {
-          this.emailResendSuccess = true;
-          this._router.navigate(['/verify']);
-        },
-        (err) => {
-          this.emailResendError = err;
+    resendEmail(): void {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            console.log(this.form);
+            return;
         }
-      );
-  }
 
+        this.email = this.form.value.email;
+        this._verificationService.resendEmail(this.email).subscribe(
+            (resp) => {
+                this.emailResendSuccess = true;
+                this._router.navigate(['/verify']);
+            },
+            (err) => {
+                this.httpError = err;
+            }
+        );
+    }
 }

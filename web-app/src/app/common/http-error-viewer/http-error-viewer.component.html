@@ -1,0 +1,10 @@
+<div class="row">
+    <!-- position-absolute -->
+    <div class="col">
+        <ng-container *ngIf="httpError.error && httpError.error.message">
+            <p class="ng-invalid-error">
+                {{ 'errors.' + httpError.error.message | translate }}
+            </p>
+        </ng-container>
+    </div>
+</div>

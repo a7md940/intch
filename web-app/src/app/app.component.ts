@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SocketService } from './services/socket.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,7 @@ import { SocketService } from './services/socket.service';
 })
 export class AppComponent {
   title = 'web-app';
-  constructor(private _socketService: SocketService) {
+  constructor(private _translate: TranslateService) {
+      this._translate.use('en-US');
   }
 }
