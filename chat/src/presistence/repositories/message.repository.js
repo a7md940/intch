@@ -12,12 +12,45 @@ module.exports = class MessageRepository {
 
     /**
      * @param {import('mongodb').FilterQuery<Message>} filter
-     * @param {import('mongodb').FindOneOptions<Message>} options
+     * @param {import('mongodb').CollectionAggregationOptions} options
      * @returns {Promise<Message[]>} Messages array.
      */
     find(filter, options = null) {
-        return this.Message.find(filter, options)
+        return this.Message.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $sort: { creationDate: 1 }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: 'userId',
+                    as: 'user',
+                }
+            },
+            {
+                $project: {
+                    'user.username': 1,
+                    'user.email': 1,
+                    message: 1,
+                    userId: 1,
+                    creationDate: 1,
+                    _id: 1,
+                    roomName: 1
+                }
+            }
+        ], options)
             .toArray()
+            .then(res => res.map(msg => {
+                    [msg.user] = msg.user;
+                    return msg;
+                })
+            );
+        // return this.Message.find(filter, options)
+        //     .toArray()
     }
 
 
