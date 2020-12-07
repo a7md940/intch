@@ -14,10 +14,10 @@
           </ng-container>
           <ng-container *ngFor="let message of messages?.collection">
             <div class="sent" *ngIf="message.userId == currentUserId">
-              <app-message-item [bgColor]="'#dcf8c6'" [chatMessage]="message"></app-message-item>
+              <app-message-item [bgColor]="'#dcf8c6'" [chatMessage]="message" [currentUserId]="currentUserId"></app-message-item>
             </div>
             <div class="recieved" *ngIf="message.userId !== currentUserId">
-              <app-message-item [bgColor]="'#fff'" [chatMessage]="message"></app-message-item>
+              <app-message-item [bgColor]="'#fff'" [chatMessage]="message" [currentUserId]="currentUserId"></app-message-item>
             </div>
           </ng-container>
         </div>
