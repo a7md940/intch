@@ -21,4 +21,10 @@ authRouter.post(
     excuteHandler(authController.refreshToken)
 );
 
+authRouter.get(
+    '/current-user',
+    requireAuth(config.jwt.secret),
+    excuteHandler(authController.getCurrentUser)
+);
+
 module.exports = authRouter;

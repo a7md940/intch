@@ -1,5 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ChatMessage } from '../models';
+import { User } from '../models/user';
 import { AuthService } from '../services/auth.service';
 import { ChatServiceService } from '../services/chat-service.service';
 import { SocketService } from '../services/socket.service';
@@ -29,6 +30,8 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
 
   pageSize = 10;
 
+  scrolledToBottom = false;
+  currentUser!: User;
   constructor(
     private _authService: AuthService,
     private _chatService: ChatServiceService
@@ -41,6 +44,11 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
           this.currentUserId = userAuth.userId;
         }
       });
+
+    this._authService.getCurrentUser()
+      .subscribe((currentUser) => {
+        this.currentUser = currentUser;
+      })
 
     this.ChatInputElement.nativeElement.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' && e.ctrlKey) {
@@ -55,11 +63,23 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    // if (this.messagesWrapperElement.nativeElement.clientHeight > 0) {
-    //   this.messagesWrapperElement.nativeElement.scroll({ top: this.messagesWrapperElement.nativeElement.offsetHeight });
-    // }
-  }
+    const landingState = !this.scrolledToBottom;
+    const { scrollHeight, clientHeight } = this.messagesWrapperElement.nativeElement;
+    const messageWrapperScrollable = scrollHeight > clientHeight;
 
+    if (landingState && messageWrapperScrollable) {
+      this.scrollMessagesWrapperToBottom();
+      this.scrolledToBottom = true;
+    }
+  }
+  scrollMessagesWrapperToBottom(): void {
+    setTimeout(() => this.messagesWrapperElement.nativeElement
+      .scroll({
+        top: this.messagesWrapperElement.nativeElement.scrollHeight,
+        behavior: 'auto'
+      })
+    );
+  }
   loadMoreTen(): void {
     this.pageIndex++;
     if (this.messages.count && this.messages.count > this.messages.pageSize * this.pageIndex) {
@@ -75,24 +95,27 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
 
   listenToIncommingMessages(): void {
     this._chatService.listenToRoom(this.roomName)
-      .subscribe((message) => {
-        this.messages.collection.push(message);
-      });
+      .subscribe((message) => this._pushNewMessage(message));
   }
 
   sendMessage(): void {
     if (this.ChatInputElement.nativeElement.value && this.ChatInputElement.nativeElement.value.trim().length !== 0) {
-      const chatMessaeg = ChatMessage.build({
+      const newChatMessage = ChatMessage.build({
         message: this.ChatInputElement.nativeElement.value,
         userId: this.currentUserId,
-        creationDate: new Date()
+        creationDate: new Date(),
+        user: Object.assign(this.currentUser)
       });
-      this._chatService.sendMessage(this.roomName, chatMessaeg)
-        .subscribe((chatMessage) => {
-          this.messages.collection.push(chatMessaeg);
-        });
+      this._chatService.sendMessage(this.roomName, newChatMessage)
+        .subscribe((chatMessage) => this._pushNewMessage(chatMessage));
     }
   }
 
+  private _pushNewMessage(message: ChatMessage): void {
+    if (Array.isArray(this.messages.collection)) {
+      this.messages.collection.push(message);
+      this.scrollMessagesWrapperToBottom();
+    }
+  }
 
 }

@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserAuth } from '../models/auth/user-auth';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private _config = {
-    authUrl: 'http://localhost:2020/authsrv'
+    authUrl: '/authsrv'
   };
   constructor(
     private _http: HttpClient
@@ -31,5 +32,9 @@ export class AuthService {
       const userAuth: UserAuth = localStorage.getItem('userAuth') ? JSON.parse(localStorage.getItem('userAuth') as string) : null;
       observer.next(userAuth ? UserAuth.build(userAuth) : null);
     });
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this._http.get<User>(`${this._config.authUrl}/auth/current-user`);
   }
 }

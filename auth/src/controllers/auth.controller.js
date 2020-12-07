@@ -2,6 +2,7 @@ const express = require('express');
 const BaseController = require('@intch/common/base-controller');
 const { UnAuthorizedException } = require('@intch/common/http-excptions');
 
+const { GetCurrentUserDto } = require('./../dtos');
 const { autoBind } = require('./../utils/functions');
 const config = require('./../config/config');
 const { UserService, AuthService } = require('../services');
@@ -76,14 +77,6 @@ module.exports = class AuthController extends BaseController {
             .catch(console.error);
 
         this.nats.publish('user:created', createdUser);
-        // const token = this.authService.generateToken(createdUser.id, createdUser.username, req.hostname);
-        // const refreshToken = this.authService.generateRefreshToken(createdUser.id, req.hostname);
-
-        // const response = SignupDto.build(token, refreshToken, createdUser.id);
-
-        // this.redis.add(`refreshTokens-${createdUser.id}`, refreshToken);
-        // res.status(201)
-        //     .json(createdUser);
         res.status(201).send();
     }
 
@@ -153,5 +146,11 @@ module.exports = class AuthController extends BaseController {
                 token: this.authService.generateToken(userId, user.username, req.hostname),
                 refreshToken: this.authService.generateRefreshToken(userId, req.hostname)
             });
+    }
+
+    async getCurrentUser(req, res) {
+        const currentUserId = req.currentUser.id;
+        const user = await this.userService.getById(currentUserId);
+        res.json(new GetCurrentUserDto(user));
     }
 }

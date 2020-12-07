@@ -13,7 +13,6 @@ import { UserAuth } from '../models/auth/user-auth';
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor() {
-    console.log('auth interceptetor');
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -21,7 +20,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
       let userAuth: UserAuth = localStorage.getItem('userAuth') ? localStorage.getItem('userAuth') as any : '{}';
       userAuth = JSON.parse(userAuth as any);
-      console.log({ userAuth })
       const token = userAuth.token;
       return next.handle(request.clone({ setHeaders: { authorization: token || '' } }));
     } catch (exc) {

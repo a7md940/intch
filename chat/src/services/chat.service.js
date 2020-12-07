@@ -25,13 +25,13 @@ module.exports = class ChatService {
      * @returns {Promise<Message>} 
      */
     async createMessage(message, userId, roomName, creationDate) {
-        console.log({ message, userId, roomName })
         const msg = Message.build({ creationDate, message, userId, roomName });
-        console.log({ messageToCreate: msg })
-        console.log({ user: await this.userRepo.findOne({ _id: idResolver(userId) }) });
 
-        const createdMessage = await this.messageRepo.create(msg);
-
+        const [createdMessage, user] = await Promise.all([
+            this.messageRepo.create(msg),
+            this.userRepo.findOne({ userId: idResolver(userId) })
+        ]);
+        createdMessage.user = user;
         return createdMessage;
     }
 
@@ -48,16 +48,16 @@ module.exports = class ChatService {
 
         if (withTopTen) {
             if (skip > count) {
-                skip = redisCacheCount;
+                skip = skip - count;
             } else {
-                skip = count - redisCacheCount;
+                skip = skip - redisCacheCount;
             }
         }
         if (skip < 0) {
             skip = 0;
         }
 
-        const messages = await this.messageRepo.find(filterCriteria, { limit: PAGE_SIZE, skip, sort: { creationDate: -1 } });
+        const messages = await this.messageRepo.find(filterCriteria, { limit: PAGE_SIZE, skip, sort: { creationDate: 1 } });
         /**
          * @type {PagedList<Message>}
          */

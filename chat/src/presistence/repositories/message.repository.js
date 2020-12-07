@@ -12,42 +12,57 @@ module.exports = class MessageRepository {
 
     /**
      * @param {import('mongodb').FilterQuery<Message>} filter
-     * @param {import('mongodb').CollectionAggregationOptions} options
+     * @param {QueryOptions} options
      * @returns {Promise<Message[]>} Messages array.
      */
     find(filter, options = null) {
-        return this.Message.aggregate([
-            {
-                $match: filter,
-            },
-            {
-                $sort: { creationDate: 1 }
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: 'userId',
-                    as: 'user',
-                }
-            },
-            {
-                $project: {
-                    'user.username': 1,
-                    'user.email': 1,
-                    message: 1,
-                    userId: 1,
-                    creationDate: 1,
-                    _id: 1,
-                    roomName: 1
-                }
+        const addPipeLine = (pipeLineObject, pipeLines) => pipeLineObject ? [...pipeLines, pipeLineObject] : [...pipeLines];
+        /**
+         * @type {object[]}
+         */
+        let pipeLines = [{ $match: filter }];
+        
+        const $sort = options.sort ? { $sort: options.sort } : null;
+        pipeLines = addPipeLine($sort, pipeLines);
+        
+        const $lookkup = {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: 'userId',
+                as: 'user',
             }
-        ], options)
+        };
+        pipeLines = addPipeLine($lookkup, pipeLines);
+
+        const $project = {
+            $project: {
+                'user.username': 1,
+                'user.email': 1,
+                message: 1,
+                userId: 1,
+                creationDate: 1,
+                _id: 1,
+                roomName: 1
+            }
+        };
+        pipeLines = addPipeLine($project, pipeLines);
+
+
+        const $skip = options.skip ? { $skip: options.skip } : null;
+        pipeLines = addPipeLine($skip, pipeLines);
+        
+        const $limit = options.limit ? { $limit: options.limit } : null;
+        pipeLines = addPipeLine($limit, pipeLines);
+
+
+        console.dir(pipeLines, { depth: null });
+        return this.Message.aggregate(pipeLines)
             .toArray()
             .then(res => res.map(msg => {
-                    [msg.user] = msg.user;
-                    return msg;
-                })
+                [msg.user] = msg.user;
+                return msg;
+            })
             );
         // return this.Message.find(filter, options)
         //     .toArray()
