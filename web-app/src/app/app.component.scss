@@ -1,3 +1,21 @@
+.app-wrapper {
+    display: flex;
+    .side-nav {
+        flex-basis: 20%;
+    }
+    .side-nav {
+        background-color: #eee;
+        height: 100vh;
+        ul {
+            padding: 1rem;
+            list-style-type: none;
+
+            li {
+                margin: .5rem 0rem;
+            }
+        }
+    }
+}
 .radius-8 {
   border-radius: 8px;
 }

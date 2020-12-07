@@ -1,83 +1,85 @@
 .messages-wrapper {
-  background-color: #333;
-  color: white;
-  width: 100%;
-  padding-right: 2rem;
-  padding-left: 2rem;
-  height: 75vh;
-  overflow-y: scroll;
-  position: relative;
-
-  .recieved {
-    background-color: transparent;
-    display: flex;
-    align-items: center;
+    background-color: #333;
+    color: white;
     width: 100%;
-    flex-direction: row;
-  }
+    padding-right: 2rem;
+    padding-left: 2rem;
+    height: 90vh;
+    overflow-y: scroll;
+    position: relative;
 
-  .sent {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    flex-direction: row-reverse;
-    background-color: transparent;
-  }
+    .recieved {
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .sent {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        flex-direction: row-reverse;
+        background-color: transparent;
+    }
 }
 
 .chat-input-wrapper {
-  background-color: #f0f0f0;
-  padding: 1rem;
-  display: flex;
+    background-color: #f0f0f0;
+    padding: 1rem;
+    display: flex;
+    max-height: 10vh;
 
-  .chat-input {
-    width: 95%;
-    border-radius: 10px;
-    border-color: transparent;
-    padding: 0.2rem 1rem;
-    &:focus {
-      outline: none;
+    .chat-input {
+        resize: none;
+        width: 95%;
+        border-radius: 10px;
+        border-color: transparent;
+        padding: 0.2rem 1rem;
+        &:focus {
+            outline: none;
+        }
     }
-  }
 
-  .send-message-button {
-    width: 5%;
-    margin: 0rem 5px;
-    border: 1px solid green;
-    border-radius: 5px;
+    .send-message-button {
+        width: 5%;
+        margin: 0rem 5px;
+        border: 1px solid green;
+        border-radius: 5px;
 
-    &:focus,
-    &:active,
-    &:hover {
-      background-color: green;
-      border: 1px solid transparent;
-      color: white;
+        &:focus,
+        &:active,
+        &:hover {
+            background-color: green;
+            border: 1px solid transparent;
+            color: white;
+        }
     }
-  }
 }
 
 .load-more {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  left: 50%;
-  top: 6%;
-  transform: scale(0.8) translateX(-50%) translateY(0px);
-  transition: 0.1s ease-in-out;
-  transition-property: transform;
-  transform-origin: left;
-  outline: none;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  border-color: transparent;
-  &:active {
-    outline: none;
-    background-color: #bbb;
-  }
-
-  &:hover {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    left: 50%;
+    top: 6%;
+    transform: scale(0.8) translateX(-50%) translateY(0px);
+    transition: 0.1s ease-in-out;
+    transition-property: transform;
     transform-origin: left;
-    transform: scale(.95) translateX(-50%) translateY(-3px);
-  }
+    outline: none;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    border-color: transparent;
+    &:active {
+        outline: none;
+        background-color: #bbb;
+    }
+
+    &:hover {
+        transform-origin: left;
+        transform: scale(0.95) translateX(-50%) translateY(-3px);
+    }
 }
