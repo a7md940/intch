@@ -2,11 +2,17 @@
   border-radius: 10px;
 }
 
+.options-wrapper {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
 .message-item {
   border-radius: 8px;
-  padding: .6rem;
+  padding: 0.6rem;
   margin: 8px;
-    color: black;
+  color: black;
   p {
     margin: 0rem;
   }
@@ -27,5 +33,5 @@
 }
 
 .message-time {
-    color: #00000073;
+  color: #00000073;
 }

@@ -1,6 +1,15 @@
 <div class="message-item" [ngStyle]="{ 'background-color': bgColor }">
-    <div class="d-flex justify-content-between align-items-center">
-        <button class="btn-reset options-icon">
+    <div class="d-flex flex-row-reverse justify-content-between align-items-center">
+
+        <span class="badge"
+        [ngClass]="{
+            'badge-dark': chatMessage.userId === currentUserId,
+            'badge-primary': chatMessage.userId !== currentUserId
+        }">
+            {{ chatMessage.user.username }}
+        </span>
+        <div class="options-wrapper">
+          <button *ngIf="chatMessage.options && chatMessage.options.length > 0" class="btn-reset options-icon">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                 width="15px" height="15px" viewBox="0 0 451.847 451.847" style="enable-background:new 0 0 451.847 451.847;"
                 xml:space="preserve">
@@ -11,13 +20,7 @@
                 </g>
             </svg>
         </button>
-        <span class="badge"
-        [ngClass]="{
-            'badge-dark': chatMessage.userId === currentUserId,
-            'badge-primary': chatMessage.userId !== currentUserId
-        }">
-            {{ chatMessage.user.username }}
-        </span>
+        </div>
     </div>
     <p>
         {{ chatMessage.message }}
