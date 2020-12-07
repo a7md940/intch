@@ -1,33 +1,52 @@
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <form class="w-100" [formGroup]="form" (ngSubmit)="submit()">
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <input class="form-control form-control-sm" type="text" placeholder="username"
-                                formControlName="username" />
+<div class="signup-wrapper h-100vh">
+    <div class="container signup-container">
+        <div class="row">
+            <div class="col">
+                <form class="w-100" [formGroup]="form" (ngSubmit)="submit()">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <input class="form-control form-control-sm" type="text" placeholder="username"
+                                    formControlName="username" />
+                                <ng-container *ngIf="form.get('username')['touched'] && form.get('username')['errors'] as userNameErrors">
+                                    <div class="ng-invalid-error">
+                                        <p *ngIf="userNameErrors.required">
+                                            Username is required.
+                                        </p>
+                                    </div>
+                                </ng-container>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <div class="form-group">
-                            <input class="form-control form-control-sm" type=" text" placeholder="Email"
-                                formControlName="email" />
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <input class="form-control form-control-sm" type=" text" placeholder="Email"
+                                    formControlName="email" />
+                                <ng-container *ngIf="form.get('email')['touched'] && form.get('email')['errors'] as emailErrors">
+                                    <div class="ng-invalid-error">
+                                        <p *ngIf="emailErrors.required">
+                                            Email is required.
+                                        </p>
+                                        <p *ngIf="emailErrors.emal">
+                                            Email is invalid.
+                                        </p>
+                                    </div>
+                                </ng-container>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-4">
-                        <button class="btn btn-sm btn-success" type="submit">
-                            Signup
-                        </button>
+                    <div class="row">
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-success" type="submit">
+                                Signup
+                            </button>
+                        </div>
+
                     </div>
 
-                </div>
-
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>

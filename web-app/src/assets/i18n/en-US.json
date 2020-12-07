@@ -1,0 +1,5 @@
+{
+    "errors": {
+        "createUser:username:exists": "Username is already exists"
+    }
+}
