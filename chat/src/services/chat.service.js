@@ -47,10 +47,11 @@ module.exports = class ChatService {
         }
 
         if (withTopTen) {
+            // TODO Fix skip value
             if (skip > count) {
                 skip = skip - count;
             } else {
-                skip = skip - redisCacheCount;
+                skip = count - skip;
             }
         }
         if (skip < 0) {
