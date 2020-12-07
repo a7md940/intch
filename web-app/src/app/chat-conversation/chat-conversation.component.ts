@@ -88,6 +88,10 @@ export class ChatConversationComponent implements OnInit, AfterViewChecked {
           this.pageSize = pagedList.pageSize;
           this.totalCount = pagedList.count;
           this.messages.collection.unshift(...pagedList.collection);
+          const firstDivElement = this.messagesWrapperElement.nativeElement
+            .querySelector('div:first-of-type') as HTMLDivElement;
+          setTimeout(() => this.messagesWrapperElement.nativeElement.scroll({ top: firstDivElement.offsetTop, behavior: 'auto' }));
+          console.dir();
         });
     }
   }

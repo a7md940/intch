@@ -6,6 +6,8 @@
   padding-left: 2rem;
   height: 75vh;
   overflow-y: scroll;
+  position: relative;
+
   .recieved {
     background-color: transparent;
     display: flex;
@@ -20,7 +22,6 @@
     width: 100%;
     flex-direction: row-reverse;
     background-color: transparent;
-
   }
 }
 
@@ -52,5 +53,31 @@
       border: 1px solid transparent;
       color: white;
     }
+  }
+}
+
+.load-more {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  left: 50%;
+  top: 6%;
+  transform: scale(0.8) translateX(-50%) translateY(0px);
+  transition: 0.1s ease-in-out;
+  transition-property: transform;
+  transform-origin: left;
+  outline: none;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  border-color: transparent;
+  &:active {
+    outline: none;
+    background-color: #bbb;
+  }
+
+  &:hover {
+    transform-origin: left;
+    transform: scale(.95) translateX(-50%) translateY(-3px);
   }
 }
