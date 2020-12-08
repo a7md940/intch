@@ -1,12 +1,18 @@
 const awilix = require('awilix');
-const { UserService, AuthService } = require('./services');
-const { AuthController, VerificationController } = require('./controllers');
-const { UserRepository } = require('./presistence/repositories');
-const { getDbInstance } = require('./presistence/db');
-const { CreateUserDtoPipe } = require('./middlewares/validator-pipes');
-const { RedisManager } = require('./utils/redis');
-const { SendGridGateway } = require('./gateways');
+
 const NatsWrapper = require('./nats-wrapper');
+const { getDbInstance } = require('./presistence/db');
+const { RedisManager } = require('./utils/redis');
+
+const { UserService, AuthService, EmailService } = require('./services');
+const { AuthController, VerificationController } = require('./controllers');
+
+const { UserRepository } = require('./presistence/repositories');
+
+const { ForgotPasswordDtoPipe, CreateUserDtoPipe } = require('./middlewares/validator-pipes');
+
+const { SendGridGateway } = require('./gateways');
+
 
 const container = awilix.createContainer({
     injectionMode: awilix.InjectionMode.CLASSIC
@@ -24,9 +30,11 @@ const setupDi = async () => {
         verificationController: awilix.asClass(VerificationController),
 
         createUserDtoPipe: awilix.asClass(CreateUserDtoPipe),
+        forgotPasswordDtoPipe: awilix.asClass(ForgotPasswordDtoPipe),
 
         authService: awilix.asClass(AuthService),
         userService: awilix.asClass(UserService),
+        emailService: awilix.asClass(EmailService),
 
         userRepo: awilix.asClass(UserRepository),
     });

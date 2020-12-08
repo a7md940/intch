@@ -4,9 +4,10 @@ const { createHash } = require('crypto');
 
 const UserService = require('./user.service');
 const config = require('./../config/config');
+const { randomNumber } = require('../utils/functions');
 
 module.exports = class AuthService {
- 
+
     constructor(userService) {
         /** @private @type {UserService} */
         this.userService = userService;
@@ -69,5 +70,14 @@ module.exports = class AuthService {
      */
     hashPassword(password, username) {
         return createHash(config.hashAlgo).update(username + password).digest('hex');
+    }
+
+    /**
+     * @returns {number[]}
+     */
+    generateForgotPasswordCode() {
+        const numbersLength = randomNumber(1, 8);
+        const numbers = Array.from({ length: numbersLength }).map((x, i) => i + 1);
+        return numbers;
     }
 }

@@ -2,22 +2,27 @@ const express = require('express');
 const {
     ParameterError,
     RequestValidationError,
-    DuplicateEntityError
+    DuplicateEntityError,
+    NotFoundError
 } = require('@intch/common');
 const { ConflictException } = require('@intch/common/http-excptions');
 const HttpExceptionsBase = require('@intch/common/http-excptions/http-exceptions-base');
+const NotFoundExcpetion = require('@intch/common/http-excptions/note-found.exception');
 
 /**
  * 
- * @param {Error} err 
- * @param {express.Request} req 
- * @param {express.Response} res 
- * @param {express.NextFunction} next 
+ * @param {(req, res, next) => void} fn 
  */
 const excuteHandler = (fn) => {
-    return async (req, res, next) => {
+    /**
+     * 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
+     * @param {import('express').NextFunction} next 
+     */
+    const handle = async (req, res, next) => {
         try {
-            await fn(req, res);
+            await fn(req, res, next);
         } catch (exc) {
             console.error(exc);
             if (exc) {
@@ -34,6 +39,10 @@ const excuteHandler = (fn) => {
                 } else if (exc instanceof HttpExceptionsBase) {
                     return res.status(exc.statusCode)
                         .send(exc);
+                } else if (exc instanceof NotFoundError) {
+                    const httpExc = new NotFoundExcpetion(exc.message, exc.code);
+                    return res.status(httpExc.statusCode)
+                        .send(httpExc);
                 } else {
                     return res.status(500)
                         .send({ errors: [{ message: 'something went wrong!!' }] });
@@ -43,5 +52,6 @@ const excuteHandler = (fn) => {
             next();
         }
     }
+    return handle;
 }
 module.exports = excuteHandler;

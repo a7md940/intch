@@ -1,3 +1,4 @@
+const { NotFoundError } = require('@intch/common');
 const express = require('express');
 const BaseController = require('@intch/common/base-controller');
 const { UnAuthorizedException } = require('@intch/common/http-excptions');
@@ -5,12 +6,12 @@ const { UnAuthorizedException } = require('@intch/common/http-excptions');
 const { GetCurrentUserDto } = require('./../dtos');
 const { autoBind } = require('./../utils/functions');
 const config = require('./../config/config');
-const { UserService, AuthService } = require('../services');
+const { UserService, AuthService, EmailService } = require('../services');
 
 const SendGridGateway = require('../gateways/send-grid.gateway');
 const { DecodedToken } = require('../utils');
 const { RedisManager } = require('../utils/redis');
-const NatsWrapper = require('./../nats-wrapper')
+const NatsWrapper = require('./../nats-wrapper');
 module.exports = class AuthController extends BaseController {
 
     /**
@@ -20,14 +21,17 @@ module.exports = class AuthController extends BaseController {
      * @param {RedisManager} redis 
      * @param {SendGridGateway} sendGridGateway
      * @param {NatsWrapper} nats
+     * @param {EmailService} emailService
      */
-    constructor(userService, authService, redis, sendGridGateway, nats) {
+    constructor(userService, authService, redis, sendGridGateway, nats, emailService) {
         super();
         this.userService = userService;
         this.authService = authService;
         this.redis = redis;
         this.sendGridGateway = sendGridGateway;
         this.nats = nats;
+        this.emailService = emailService;
+
 
         autoBind(this);
     }
@@ -152,5 +156,34 @@ module.exports = class AuthController extends BaseController {
         const currentUserId = req.currentUser.id;
         const user = await this.userService.getById(currentUserId);
         res.json(new GetCurrentUserDto(user));
+    }
+
+    /**
+     * 
+     * @param {import('express').Request} req 
+     * @param {import('express').Response} res 
+     */
+    async forgotPassword(req, res) {
+        const { email } = req.body;
+        const user = await this.userService.getUserByEmail(email);
+        if (!user) {
+            throw new NotFoundError('forgotPassword:noUserRegisteredByThisEmail', 'FPNURBTE_pxo3');
+        }
+        const code = this.authService.generateForgotPasswordCode().join(' - ');
+        this.redis.get(`forgot_password_${user.id}_code`)
+            .then((val) => {
+                if (val) {
+                    this.redis.remove(`forgot_password_${user.id}_code`)
+                        .then(() => this.redis.add(`forgot_password_${user.id}_code`, code));
+
+                } else {
+                    this.redis.add(`forgot_password_${user.id}_code`, code);
+                }
+            })
+
+        const emailTemplate = this.emailService.buildForgorTemplate(user.username, code);
+        await this.sendGridGateway.sendEmail(config.appEmail, user.email, 'Reset password code', emailTemplate);
+        res.status(200)
+            .send();
     }
 }

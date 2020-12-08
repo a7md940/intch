@@ -18,6 +18,11 @@ module.exports = class RedisManager {
         autoBind(this);
     }
 
+    /**
+     * 
+     * @param {string} key
+     * @returns {Promise<any>} 
+     */
     get(key) {
         return get(key);
     }
@@ -45,6 +50,11 @@ module.exports = class RedisManager {
             }
         })
     }
+    /**
+     * 
+     * @param {string} key
+     * @returns {Promise<any>} 
+     */
     remove(key) {
         return del(key)
     }

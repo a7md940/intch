@@ -1,7 +1,8 @@
 const express = require('express');
+const { excutePipe } = require('@intch/common/middlewares');
 
 const { container } = require('../../di-setup');
-const { excutePipe, excuteHandler } = require('../../middlewares')
+const { excuteHandler } = require('../../middlewares')
 const { AuthController } = require('../../controllers');
 const { CreateUserDtoPipe } = require('../../middlewares/validator-pipes');
 
@@ -13,7 +14,7 @@ const createUserDtoPipe = container.resolve('createUserDtoPipe');
 
 signupROuter.post(
     '/',
-    excutePipe(createUserDtoPipe.transform),
+    excutePipe(createUserDtoPipe, container),
     excuteHandler(authController.signup),
 );
 module.exports = signupROuter;
